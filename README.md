@@ -434,7 +434,15 @@ sudo docker run --rm -p 3000:3000 bkimminich/juice-shop
 
 # Method 3: If cloned from repository
 cd juice-shop
-npm start
+npm start > /dev/null 2>&1 &
+```
+
+### Step 4: Stop Juice Shop
+```bash
+# Kill it (replace %1 with actual job number)
+kill %1
+# or kill by process ID
+kill 424905
 ```
 
 ### Step 4: Access and Configure Juice Shop
