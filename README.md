@@ -453,26 +453,70 @@ kill 424905
 
 ---
 
-# 🔧 Scanning Tools Configuration
+# 🔧 Comprehensive Web Application Security Scanner Setup Guide
 
-## Burp Suite Configuration
+## 1. 🎯 Burp Suite - Interactive Web Application Security Testing
 
-### Launch and Basic Setup
+### What is Burp Suite?
+Burp Suite is an integrated platform for performing security testing of web applications. It acts as a proxy between your browser and the target application, allowing you to intercept, modify, and analyze HTTP requests and responses.
+
+### Prerequisites
+```bash
+# Ensure Burp Suite is installed
+sudo apt update
+sudo apt install burpsuite
+```
+
+### Step 1: Basic Manual Scanning
+
+#### 1.1 Launch Burp Suite
 ```bash
 # Launch Burp Suite Community Edition
 burpsuite &
-
-# Burp Suite setup process:
-# 1. Configure browser proxy to 127.0.0.1:8080
-# 2. Install Burp CA certificate in browser
-# 3. Navigate through target application
-# 4. Use Burp's built-in crawler for site mapping
-# 5. Analyze captured requests in Target tab
-# 6. Send interesting requests to Repeater/Intruder
 ```
 
-### Custom Payload Lists
+#### 1.2 Initial Configuration (UI Steps)
+1. **Start Burp Suite**
+   - Click "Next" on the startup screen
+   - Select "Use Burp defaults" for project options
+   - Click "Start Burp"
+
+2. **Configure Browser Proxy**
+   - In Firefox: Go to Settings → Network Settings → Manual proxy configuration
+   - Set HTTP Proxy: `127.0.0.1` Port: `8080`
+   - Check "Use this proxy server for all protocols"
+
+3. **Install Burp CA Certificate**
+   - Navigate to `http://burp` in your browser
+   - Click "CA Certificate" to download
+   - In Firefox: Settings → Privacy & Security → Certificates → View Certificates
+   - Import the downloaded certificate
+
+#### 1.3 Manual Testing Process
+1. **Navigate Target Application**
+   - Go to your target (e.g., `http://localhost:3000` for Juice Shop)
+   - Browse through different pages and features
+   - All traffic will be captured in Burp's "Target" tab
+
+2. **Analyze Captured Requests**
+   - Go to "Target" tab → "Site map"
+   - Review all discovered endpoints
+   - Right-click interesting requests → "Send to Repeater"
+
+3. **Manual Testing**
+   - Use "Repeater" tab to modify and resend requests
+   - Use "Intruder" tab for automated parameter fuzzing
+
+### Step 2: Automated Payload Generation
+
+#### 2.1 Create Payload Setup Script
+**Filename:** `setup_burp_payloads.sh`
+
 ```bash
+#!/bin/bash
+# Burp Suite Payload Generator
+# Creates organized payload lists for common web vulnerabilities
+
 # Create custom SQL injection payload list
 mkdir -p ~/.config/burp/payloads
 cat > ~/.config/burp/payloads/sql_injection.txt << 'EOF'
@@ -506,28 +550,101 @@ javascript:alert('XSS')
 <input onfocus=alert('XSS') autofocus>
 <select onfocus=alert('XSS') autofocus>
 EOF
+
+echo "Burp Suite payloads created successfully!"
+echo "SQL Injection payloads: ~/.config/burp/payloads/sql_injection.txt"
+echo "XSS payloads: ~/.config/burp/payloads/xss_payloads.txt"
 ```
 
-## OWASP ZAP Configuration
+#### 2.2 Execute Payload Script
+```bash
+# Make executable
+chmod +x setup_burp_payloads.sh
 
-### Launch and Setup
+# Run the script
+./setup_burp_payloads.sh
+
+# Verify files were created
+ls -la ~/.config/burp/payloads/
+```
+
+#### 2.3 Use Payloads in Burp Suite
+1. Send a request to "Intruder"
+2. Set payload positions (highlight parameters)
+3. Go to "Payloads" tab
+4. Load payload file: "Load..." → Select your payload file
+5. Click "Start attack"
+
+---
+
+## 2. 🕷️ OWASP ZAP - Automated Web Application Security Scanner
+
+### What is OWASP ZAP?
+OWASP ZAP (Zed Attack Proxy) is a free, open-source web application security scanner. It's designed to be used by people with a wide range of security experience and is ideal for developers and functional testers.
+
+### Prerequisites
+```bash
+# Install ZAP and Python API
+sudo apt update
+sudo apt install zaproxy
+pip3 install python-owasp-zap-v2.4
+```
+
+### Step 1: Basic Manual Scanning
+
+#### 1.1 Launch ZAP
 ```bash
 # Launch ZAP in GUI mode
 zaproxy &
-
-# ZAP configuration workflow:
-# 1. Configure browser proxy to 127.0.0.1:8080
-# 2. Navigate through target application manually
-# 3. Use ZAP's automated spider for URL discovery
-# 4. Execute active scan on discovered endpoints
-# 5. Review findings in Alerts tab
 ```
 
-### Automated Scanning Script
+#### 1.2 Initial Configuration (UI Steps)
+1. **ZAP Startup**
+   - Choose "No, I do not want to persist this session" (for basic scanning)
+   - Click "Start"
+
+2. **Configure Browser Proxy**
+   - In Firefox: Settings → Network Settings → Manual proxy configuration
+   - Set HTTP Proxy: `127.0.0.1` Port: `8080`
+   - Important: If both Burp and ZAP are running, use different ports or run them separately
+
+3. **Install ZAP CA Certificate**
+   - In ZAP: Tools → Options → Dynamic SSL Certificates
+   - Click "Save" to download the certificate
+   - Import in Firefox: Settings → Privacy & Security → Certificates → Import
+
+#### 1.3 Manual Scanning Process
+1. **Navigate Target Application**
+   - Enter target URL in ZAP's URL field: `http://localhost:3000`
+   - Browse through the application manually
+   - All requests appear in the "Sites" tree
+
+2. **Use Built-in Spider**
+   - Right-click on target in Sites tree
+   - Select "Attack" → "Spider"
+   - Click "Start Scan"
+
+3. **Run Active Scan**
+   - After spidering, right-click target
+   - Select "Attack" → "Active Scan"
+   - Click "Start Scan"
+
+4. **Review Results**
+   - Check "Alerts" tab for vulnerabilities
+   - Each alert shows details, solution, and references
+
+### Step 2: Automated ZAP Scanning
+
+#### 2.1 Create ZAP Automation Script
+**Filename:** `zap_auto_scan.py`
+
+**What this script does:** Automatically connects to ZAP, crawls the target website to find all pages, then tests each page for security vulnerabilities, and generates detailed reports.
+
 ```python
 #!/usr/bin/env python3
 """
 ZAP Automated Scanning Script for Kali Linux
+Automatically crawls and scans web applications for vulnerabilities
 """
 from zapv2 import ZAPv2
 import time
@@ -577,40 +694,95 @@ def automated_scan(target_url):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 zap_scan.py <target_url>")
+        print("Usage: python3 zap_auto_scan.py <target_url>")
         sys.exit(1)
     
     target = sys.argv[1]
     automated_scan(target)
 ```
 
-## Nikto Configuration
-
-### Basic Nikto Scanning
+#### 2.2 Execute ZAP Automation
 ```bash
-# Basic vulnerability scan
-nikto -h http://127.0.0.1/dvwa/
+# Start ZAP first
+zaproxy &
 
-# Comprehensive scan with detailed output
-nikto -h http://127.0.0.1/dvwa/ -o nikto_dvwa_scan.html -Format htm
+# Wait for ZAP to fully load (about 30 seconds)
+sleep 30
 
-# Juice Shop reconnaissance
-nikto -h http://localhost:3000 -o nikto_juiceshop_scan.html -Format htm
+# Make script executable
+chmod +x zap_auto_scan.py
 
-# Advanced scanning with specific plugins
-nikto -h http://127.0.0.1/dvwa/ -Plugins @@ALL -save nikto_full_scan.txt
+# Run automated scan
+python3 zap_auto_scan.py http://localhost:3000
+
+# View results
+firefox zap_report.html &
 ```
 
-### Comprehensive Nikto Scanning Script
+---
+
+## 3. 🔍 Nikto - Web Server Security Scanner
+
+### What is Nikto?
+Nikto is a web server scanner that performs comprehensive tests against web servers for multiple items including dangerous files, outdated server versions, and server configuration issues.
+
+### Prerequisites
+```bash
+# Nikto comes pre-installed on Kali Linux, but update if needed
+sudo apt update
+sudo apt install nikto
+```
+
+### Step 1: Basic Manual Scanning
+
+#### 1.1 Basic Nikto Commands
+```bash
+# Basic vulnerability scan
+nikto -h http://localhost:3000
+
+# Scan with HTML output
+nikto -h http://localhost:3000 -o basic_scan.html -Format htm
+
+# SSL/TLS specific scan
+nikto -h https://localhost:3000 -ssl
+
+# Scan specific directories
+nikto -h http://localhost:3000 -Cgidirs /admin,/api,/login
+```
+
+#### 1.2 Advanced Manual Options
+```bash
+# Scan with all plugins
+nikto -h http://localhost:3000 -Plugins @@ALL
+
+# Scan with specific tests
+nikto -h http://localhost:3000 -Tuning x
+
+# Verbose output
+nikto -h http://localhost:3000 -verbose
+
+# Save session for resume
+nikto -h http://localhost:3000 -save nikto_session.txt
+```
+
+### Step 2: Automated Comprehensive Nikto Scanning
+
+#### 2.1 Create Nikto Automation Script
+**Filename:** `nikto_comprehensive_scan.sh`
+
+**What this script does:** Runs multiple types of Nikto scans (basic, SSL, CGI, comprehensive) against a target and organizes all results in timestamped folders with HTML reports.
+
 ```bash
 #!/bin/bash
 # Comprehensive Nikto scanning script for Kali Linux
+# Performs multiple scan types and organizes results
 
 TARGET_URL="$1"
 OUTPUT_DIR="nikto_results_$(date +%Y%m%d_%H%M%S)"
 
 if [ -z "$TARGET_URL" ]; then
     echo "Usage: $0 <target_url>"
+    echo "Example: $0 http://localhost:3000"
     exit 1
 fi
 
@@ -618,6 +790,7 @@ mkdir -p "$OUTPUT_DIR"
 cd "$OUTPUT_DIR"
 
 echo "Starting comprehensive Nikto scan of $TARGET_URL"
+echo "Results will be saved in $OUTPUT_DIR/"
 
 # Basic scan
 echo "Running basic scan..."
@@ -636,6 +809,78 @@ echo "Running comprehensive scan..."
 nikto -h "$TARGET_URL" -Plugins @@ALL -o "comprehensive_scan.html" -Format htm
 
 echo "Nikto scanning completed. Results saved in $OUTPUT_DIR/"
+echo "Open reports with: firefox $OUTPUT_DIR/*.html"
+```
+
+#### 2.2 Execute Nikto Automation
+```bash
+# Make executable
+chmod +x nikto_comprehensive_scan.sh
+
+# Run comprehensive scan
+./nikto_comprehensive_scan.sh http://localhost:3000
+
+# View results
+ls nikto_results_*/
+firefox nikto_results_*/*.html &
+```
+
+---
+
+## 🚀 Complete Workflow Example
+
+### Step-by-Step Implementation
+
+#### Phase 1: Setup and Basic Scanning
+```bash
+# 1. Setup Burp payloads
+chmod +x setup_burp_payloads.sh
+./setup_burp_payloads.sh
+
+# 2. Start target application (Juice Shop)
+cd ~/juice-shop
+npm start &
+
+# 3. Basic Burp Suite scanning
+burpsuite &
+# Follow UI configuration steps above
+
+# 4. Basic ZAP scanning
+zaproxy &
+# Follow UI configuration steps above
+
+# 5. Basic Nikto scanning
+nikto -h http://localhost:3000 -o quick_scan.html -Format htm
+```
+
+#### Phase 2: Automated Comprehensive Scanning
+```bash
+# 1. Automated ZAP scan
+python3 zap_auto_scan.py http://localhost:3000
+
+# 2. Comprehensive Nikto scan
+./nikto_comprehensive_scan.sh http://localhost:3000
+
+# 3. View all results
+firefox zap_report.html &
+firefox nikto_results_*/comprehensive_scan.html &
+```
+
+### Results Analysis
+- **Burp Suite**: Interactive testing, manual vulnerability verification
+- **ZAP Reports**: Automated vulnerability findings with severity ratings
+- **Nikto Reports**: Server-level security issues and misconfigurations
+
+### Additional Tools Needed
+```bash
+# Browser configuration
+firefox &  # For proxy configuration and certificate installation
+
+# Report viewing
+firefox &  # For HTML report analysis
+
+# Process management
+htop       # To monitor running processes
 ```
 
 ---
