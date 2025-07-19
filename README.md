@@ -168,7 +168,7 @@ sudo apt update && sudo apt upgrade -y
 # Verify security tools installation
 burpsuite --version
 zaproxy --version
-nikto -Version
+nikto -version
 
 # Install missing tools if necessary
 sudo apt install burpsuite zaproxy nikto -y
