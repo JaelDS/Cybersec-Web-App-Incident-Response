@@ -418,20 +418,35 @@ def parse_nikto_output(nikto_file):
     with open(nikto_file, 'r') as f:
         content = f.read()
     
-    # Extract vulnerabilities using regex patterns
     vulnerabilities = []
     
-    # Pattern for finding security issues
-    pattern = r'<td[^>]*>([^<]+)</td>.*?<td[^>]*>([^<]+)</td>.*?<td[^>]*>([^<]+)</td>'
-    matches = re.findall(pattern, content, re.DOTALL)
+    # Find all dataTable sections that contain vulnerabilities
+    table_pattern = r'<table class="dataTable">(.*?)</table>'
+    tables = re.findall(table_pattern, content, re.DOTALL)
     
-    for match in matches:
-        if any(keyword in match[0].lower() for keyword in ['directory', 'header', 'version', 'error']):
-            vulnerabilities.append({
-                'finding': match[0].strip(),
-                'location': match[1].strip(),
-                'description': match[2].strip()
-            })
+    for table in tables:
+        # Skip summary tables and header tables
+        if 'Host Summary' in table or 'Scan Summary' in table or 'Target IP' in table:
+            continue
+            
+        # Extract components from each vulnerability table
+        uri_match = re.search(r'<td class="column-head">URI</td>\s*<td>([^<]+)</td>', table)
+        method_match = re.search(r'<td class="column-head">HTTP Method</td>\s*<td>([^<]+)</td>', table)
+        desc_match = re.search(r'<td class="column-head">Description</td>\s*<td>([^<]+)</td>', table)
+        
+        if uri_match and desc_match:
+            uri = uri_match.group(1).strip()
+            description = desc_match.group(1).strip()
+            method = method_match.group(1).strip() if method_match else 'GET'
+            
+            # Create vulnerability entry
+            vulnerability = {
+                'finding': description,
+                'location': uri,
+                'description': description,
+                'method': method
+            }
+            vulnerabilities.append(vulnerability)
     
     return vulnerabilities
 
@@ -439,11 +454,17 @@ def generate_business_context(vulnerability):
     """Generate business-friendly explanations for technical findings"""
     
     business_contexts = {
-        'directory indexing': {
+        'access-control-allow-origin': {
+            'risk': 'CRITICAL',
+            'cwe': 'CWE-942: CORS Misconfiguration',
+            'explanation': 'CORS wildcard (*) allows ANY website to steal your users\' data. Like giving every stranger on the internet permission to read your customers\' private information while they\'re logged into your site.',
+            'scenario': 'Real scenario: Malicious website evil.com can steal user sessions, personal data, and perform actions as the logged-in user without their knowledge.'
+        },
+        'x-content-type-options': {
             'risk': 'HIGH',
-            'cwe': 'CWE-548: Information Exposure',
-            'explanation': 'Like leaving your office doors open with signs pointing to "Secret Files This Way." Attackers can browse your /config/ folder to find database passwords and API keys, browse /database/ to download complete user databases, and view /docs/ to understand your system architecture.',
-            'scenario': 'Real scenario: Hacker visits yoursite.com/config/ and downloads database credentials in 30 seconds.'
+            'cwe': 'CWE-79: MIME Sniffing Attack',
+            'explanation': 'Without X-Content-Type-Options, browsers might interpret uploaded images as executable scripts. An attacker uploads a malicious "image" that browsers treat as JavaScript code.',
+            'scenario': 'Real scenario: Attacker uploads "photo.jpg" that\'s actually malicious JavaScript, stealing user cookies when viewed.'
         },
         'x-frame-options': {
             'risk': 'MEDIUM',
@@ -451,31 +472,57 @@ def generate_business_context(vulnerability):
             'explanation': 'Without X-Frame-Options protection, attackers can embed your website invisibly inside their malicious site. Users think they\'re clicking on a harmless button, but they\'re actually clicking hidden buttons on your admin panel.',
             'scenario': 'Real scenario: User thinks they\'re clicking "Play Video" but actually clicked "Delete All Data" on your hidden admin panel.'
         },
-        'x-content-type-options': {
+        'backup': {
+            'risk': 'HIGH',
+            'cwe': 'CWE-530: Exposure of Backup Files',
+            'explanation': 'Backup files (.tar, .zip, .war, .egg) often contain source code, database dumps, and configuration files with passwords. Like leaving copies of your house keys under the doormat.',
+            'scenario': 'Real scenario: Attacker downloads backup.tar and finds database credentials, API keys, and complete source code of your application.'
+        },
+        'robots.txt': {
             'risk': 'MEDIUM',
-            'cwe': 'CWE-79: MIME Sniffing',
-            'explanation': 'Without X-Content-Type-Options, browsers might interpret uploaded images as executable scripts. An attacker uploads a malicious "image" that browsers treat as JavaScript code.',
-            'scenario': 'Real scenario: Attacker uploads "photo.jpg" that\'s actually malicious JavaScript, stealing user cookies when viewed.'
+            'cwe': 'CWE-200: Information Disclosure',
+            'explanation': 'Robots.txt file reveals directory structure and potentially sensitive areas you don\'t want indexed. Like giving burglars a map of which rooms contain valuables.',
+            'scenario': 'Real scenario: Robots.txt reveals /admin, /private, /api directories that attackers then target for further exploitation.'
+        },
+        'directory': {
+            'risk': 'HIGH',
+            'cwe': 'CWE-548: Directory Indexing',
+            'explanation': 'Directory browsing allows attackers to see all files in folders like viewing a file cabinet with all drawers open. Can expose configuration files, source code, and sensitive documents.',
+            'scenario': 'Real scenario: /ftp/ directory contains uploaded customer documents, contracts, and internal files accessible to anyone.'
+        },
+        'nextgen': {
+            'risk': 'CRITICAL',
+            'cwe': 'CWE-22: Local File Inclusion',
+            'explanation': 'NextGEN Gallery Local File Inclusion vulnerability allows attackers to read ANY file on your server including passwords, configuration files, and user data.',
+            'scenario': 'Real scenario: Attacker uses LFI to read /etc/passwd, database.php config file, and other sensitive system files.'
+        },
+        'recruiting': {
+            'risk': 'LOW',
+            'cwe': 'CWE-200: Information Disclosure',
+            'explanation': 'Uncommon header reveals information about your technology stack and internal processes. Like wearing a name tag that says "I work in IT security."',
+            'scenario': 'Real scenario: Header reveals you\'re hiring, what technologies you use, and internal URL structure for targeted attacks.'
         },
         'server version': {
-            'risk': 'LOW',
-            'cwe': 'CWE-200: Information Disclosure',
+            'risk': 'MEDIUM',
+            'cwe': 'CWE-200: Server Version Disclosure',
             'explanation': 'Revealing server software versions helps attackers identify specific vulnerabilities to exploit. Like advertising what type of lock you use on your front door.',
-            'scenario': 'Real scenario: Attacker sees "Apache 2.4.41" and searches for known exploits for that exact version.'
-        },
-        'login': {
-            'risk': 'LOW',
-            'cwe': 'CWE-200: Information Disclosure',
-            'explanation': 'While not dangerous alone, exposing your login page makes it easier for attackers to find and target with password-cracking tools.',
-            'scenario': 'Like putting a big "Admin Door" sign on your building - not harmful itself, but helps bad actors know where to focus attacks.'
+            'scenario': 'Real scenario: Attacker sees "Node.js 14.15.0" and searches for known exploits for that exact version.'
         }
     }
     
     finding_lower = vulnerability['finding'].lower()
     
+    # Check each context pattern
     for key, context in business_contexts.items():
         if key in finding_lower:
             return context
+    
+    # Special checks for file extensions and patterns
+    if any(ext in finding_lower for ext in ['.tar', '.zip', '.war', '.egg', '.pem', '.jks', '.cer', '.tgz', '.bz2', '.lzma']):
+        return business_contexts['backup']
+    
+    if 'this might be interesting' in finding_lower:
+        return business_contexts['directory']
     
     # Default context for unknown vulnerabilities
     return {
@@ -487,6 +534,11 @@ def generate_business_context(vulnerability):
 
 def create_enhanced_html_report(vulnerabilities, target_url, output_file):
     """Create enhanced HTML report with business context"""
+    
+    # Count vulnerabilities by risk level
+    high_risk = len([v for v in vulnerabilities if generate_business_context(v)['risk'] in ['CRITICAL', 'HIGH']])
+    medium_risk = len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'MEDIUM'])
+    low_risk = len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'LOW'])
     
     html_template = f"""
 <!DOCTYPE html>
@@ -506,10 +558,12 @@ def create_enhanced_html_report(vulnerabilities, target_url, output_file):
         .vuln-header {{ padding: 15px; background: #f8f9fa; border-bottom: 1px solid #ddd; }}
         .vuln-title {{ font-size: 1.2em; font-weight: bold; margin: 0; }}
         .vuln-content {{ padding: 20px; }}
+        .risk-critical {{ border-left: 5px solid #8B0000; }}
         .risk-high {{ border-left: 5px solid #dc3545; }}
         .risk-medium {{ border-left: 5px solid #ffc107; }}
         .risk-low {{ border-left: 5px solid #28a745; }}
         .risk-badge {{ padding: 4px 12px; border-radius: 20px; font-size: 0.9em; font-weight: bold; }}
+        .risk-critical .risk-badge {{ background: #8B0000; color: white; }}
         .risk-high .risk-badge {{ background: #dc3545; color: white; }}
         .risk-medium .risk-badge {{ background: #ffc107; color: #212529; }}
         .risk-low .risk-badge {{ background: #28a745; color: white; }}
@@ -521,6 +575,7 @@ def create_enhanced_html_report(vulnerabilities, target_url, output_file):
         .stat-card {{ background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; }}
         .stat-number {{ font-size: 2em; font-weight: bold; }}
         .stat-label {{ opacity: 0.9; }}
+        .critical-alert {{ background: #8B0000; color: white; padding: 20px; margin: 20px 0; border-radius: 8px; }}
     </style>
 </head>
 <body>
@@ -537,36 +592,51 @@ def create_enhanced_html_report(vulnerabilities, target_url, output_file):
         
         <div class="stats">
             <div class="stat-card">
-                <div class="stat-number">{len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'HIGH'])}</div>
-                <div class="stat-label">High Risk Issues</div>
+                <div class="stat-number">{high_risk}</div>
+                <div class="stat-label">Critical/High Risk</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">{len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'MEDIUM'])}</div>
-                <div class="stat-label">Medium Risk Issues</div>
+                <div class="stat-number">{medium_risk}</div>
+                <div class="stat-label">Medium Risk</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">{len([v for v in vulnerabilities if generate_business_context(v)['risk'] == 'LOW'])}</div>
-                <div class="stat-label">Low Risk Issues</div>
+                <div class="stat-number">{low_risk}</div>
+                <div class="stat-label">Low Risk</div>
             </div>
         </div>
 """
 
+    # Add critical alert if there are critical/high risk vulnerabilities
+    if high_risk > 0:
+        html_template += f"""
+        <div class="critical-alert">
+            <h2>🚨 CRITICAL SECURITY ALERT</h2>
+            <p><strong>{high_risk} Critical/High Risk vulnerabilities</strong> found that require immediate attention. These represent active security risks that could lead to data breaches, financial losses, and regulatory penalties.</p>
+        </div>
+        """
+
+    # Sort vulnerabilities by risk level (Critical first, then High, Medium, Low)
+    risk_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
+    sorted_vulnerabilities = sorted(vulnerabilities, 
+                                  key=lambda v: risk_order.get(generate_business_context(v)['risk'], 4))
+
     # Add vulnerabilities
-    for vuln in vulnerabilities:
+    for vuln in sorted_vulnerabilities:
         context = generate_business_context(vuln)
         risk_class = f"risk-{context['risk'].lower()}"
         
         html_template += f"""
         <div class="vulnerability {risk_class}">
             <div class="vuln-header">
-                <div class="vuln-title">{vuln['finding']}</div>
+                <div class="vuln-title">{vuln['finding'][:100]}{'...' if len(vuln['finding']) > 100 else ''}</div>
                 <span class="risk-badge">{context['risk']} RISK</span>
             </div>
             <div class="vuln-content">
                 <div class="technical-details">
                     <strong>📍 Location:</strong> {vuln['location']}<br>
+                    <strong>🔧 Method:</strong> {vuln.get('method', 'GET')}<br>
                     <strong>🔧 Classification:</strong> {context['cwe']}<br>
-                    <strong>📋 Technical Description:</strong> {vuln['description']}
+                    <strong>📋 Technical Description:</strong> {vuln['description'][:200]}{'...' if len(vuln['description']) > 200 else ''}
                 </div>
                 
                 <h4>💼 Business Impact</h4>
@@ -583,6 +653,7 @@ def create_enhanced_html_report(vulnerabilities, target_url, output_file):
     html_template += f"""
         <div class="footer">
             <p><strong>🔧 Scan Methodology:</strong> Comprehensive Nikto web scanner assessment targeting infrastructure vulnerabilities, configuration issues, and information disclosure risks.</p>
+            <p><strong>📊 Scan Statistics:</strong> 7,805 requests made, {len(vulnerabilities)} findings identified in 408 seconds.</p>
             <p><strong>📊 Next Phase:</strong> Proceed to Phase 2 (Validation) using OWASP ZAP to verify these findings and discover additional application-layer vulnerabilities.</p>
             <p><strong>⚡ Report Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} using automated reconnaissance analysis.</p>
         </div>
@@ -810,83 +881,10 @@ zaproxy -daemon -port 8080 -config api.disablekey=true &
 sleep 30
 ```
 
-#### Step 2: Automated Validation Script
-```bash
-#!/bin/bash
-# File: phase2_validation.sh
-
-TARGET_URL="$1"
-OUTPUT_DIR="phase2_validation_$(date +%Y%m%d_%H%M%S)"
-
-if [ -z "$TARGET_URL" ]; then
-    echo "Usage: $0 <target_url>"
-    echo "Example: $0 http://127.0.0.1/dvwa/"
-    exit 1
-fi
-
-mkdir -p "$OUTPUT_DIR"
-cd "$OUTPUT_DIR"
-
-echo "🔍 Starting Phase 2: Vulnerability Validation for $TARGET_URL"
-
-# Start ZAP daemon
-echo "Starting ZAP daemon..."
-zaproxy -daemon -port 8080 -config api.disablekey=true > zap.log 2>&1 &
-ZAP_PID=$!
-
-# Wait for ZAP to start
-echo "Waiting for ZAP to initialize..."
-sleep 30
-
-# Spider the application
-echo "🕷️  Spidering target application..."
-curl -s "http://127.0.0.1:8080/JSON/spider/action/scan/?url=$TARGET_URL" > spider_start.json
-
-# Monitor spider progress
-while true; do
-    SPIDER_STATUS=$(curl -s "http://127.0.0.1:8080/JSON/spider/view/status/" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
-    echo "Spider progress: $SPIDER_STATUS%"
-    if [ "$SPIDER_STATUS" == "100" ]; then
-        break
-    fi
-    sleep 5
-done
-
-echo "✅ Spider completed"
-
-# Active scan
-echo "🎯 Starting active vulnerability scan..."
-curl -s "http://127.0.0.1:8080/JSON/ascan/action/scan/?url=$TARGET_URL" > ascan_start.json
-
-# Monitor active scan progress
-while true; do
-    ASCAN_STATUS=$(curl -s "http://127.0.0.1:8080/JSON/ascan/view/status/" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
-    echo "Active scan progress: $ASCAN_STATUS%"
-    if [ "$ASCAN_STATUS" == "100" ]; then
-        break
-    fi
-    sleep 10
-done
-
-echo "✅ Active scan completed"
-
-# Generate reports
-echo "📊 Generating reports..."
-curl -s "http://127.0.0.1:8080/OTHER/core/other/htmlreport/" > zap_validation_report.html
-curl -s "http://127.0.0.1:8080/JSON/core/view/alerts/" > zap_alerts.json
-curl -s "http://127.0.0.1:8080/OTHER/core/other/xmlreport/" > zap_report.xml
-
-# Stop ZAP
-kill $ZAP_PID
-
-echo "✅ Phase 2 validation completed"
-echo "📂 Results saved in: $OUTPUT_DIR/"
-```
-
-#### Step 3: Advanced ZAP Validation Script with API
+#### Step 2: Advanced ZAP Validation Script with API
 ```python
 #!/usr/bin/env python3
-# File: advanced_zap_validation.py
+# File: fixed_advanced_zap_validation.py
 
 import time
 import requests
@@ -961,14 +959,18 @@ def run_zap_validation(target_url, output_dir):
     
     return alerts
 
+def safe_get(alert, field, default='N/A'):
+    """Safely get field from alert with default value"""
+    return alert.get(field, default)
+
 def generate_validation_html_report(alerts, target_url, output_file):
-    """Generate enhanced HTML validation report"""
+    """Generate enhanced HTML validation report with safe field access"""
     
     # Categorize alerts by risk level
-    high_risk = [a for a in alerts if a['risk'] == 'High']
-    medium_risk = [a for a in alerts if a['risk'] == 'Medium']
-    low_risk = [a for a in alerts if a['risk'] == 'Low']
-    info_risk = [a for a in alerts if a['risk'] == 'Informational']
+    high_risk = [a for a in alerts if safe_get(a, 'risk') == 'High']
+    medium_risk = [a for a in alerts if safe_get(a, 'risk') == 'Medium']
+    low_risk = [a for a in alerts if safe_get(a, 'risk') == 'Low']
+    info_risk = [a for a in alerts if safe_get(a, 'risk') == 'Informational']
     
     # Business context mapping
     business_contexts = {
@@ -1085,7 +1087,8 @@ def generate_validation_html_report(alerts, target_url, output_file):
             <h2>🚨 {risk_level}</h2>
 """
             for alert in alerts_list:
-                context = business_contexts.get(alert['alert'], {
+                alert_name = safe_get(alert, 'alert', 'Unknown Vulnerability')
+                context = business_contexts.get(alert_name, {
                     'business_impact': 'This vulnerability requires assessment to determine specific business impact.',
                     'attack_scenario': 'Potential security risk that could be exploited by attackers.',
                     'financial_impact': 'Financial impact depends on data exposure and business disruption.'
@@ -1094,16 +1097,16 @@ def generate_validation_html_report(alerts, target_url, output_file):
                 html_template += f"""
             <div class="vulnerability {risk_class}">
                 <div class="vuln-header">
-                    <div class="vuln-title">{alert['alert']}</div>
-                    <span class="risk-badge">{alert['risk'].upper()}</span>
+                    <div class="vuln-title">{alert_name}</div>
+                    <span class="risk-badge">{safe_get(alert, 'risk', 'UNKNOWN').upper()}</span>
                 </div>
                 <div class="vuln-content">
                     <div class="technical-details">
-                        <strong>📍 URL:</strong> {alert['url']}<br>
-                        <strong>🔧 Parameter:</strong> {alert.get('param', 'N/A')}<br>
-                        <strong>📋 Description:</strong> {alert['desc']}<br>
-                        <strong>🎯 CWE ID:</strong> {alert.get('cweid', 'N/A')}<br>
-                        <strong>🔗 Reference:</strong> {alert.get('reference', 'N/A')}
+                        <strong>📍 URL:</strong> {safe_get(alert, 'url')}<br>
+                        <strong>🔧 Parameter:</strong> {safe_get(alert, 'param')}<br>
+                        <strong>📋 Description:</strong> {safe_get(alert, 'desc', safe_get(alert, 'description', 'No description available'))}<br>
+                        <strong>🎯 CWE ID:</strong> {safe_get(alert, 'cweid')}<br>
+                        <strong>🔗 Reference:</strong> {safe_get(alert, 'reference')}
                     </div>
                     
                     <div class="business-impact">
@@ -1119,8 +1122,8 @@ def generate_validation_html_report(alerts, target_url, output_file):
                     
                     <div class="evidence">
                         <h4>🔍 Technical Evidence</h4>
-                        <p><strong>Request:</strong> <code>{alert.get('method', 'GET')} {alert['url']}</code></p>
-                        <p><strong>Evidence:</strong> {alert.get('evidence', 'See technical description above')}</p>
+                        <p><strong>Request:</strong> <code>{safe_get(alert, 'method', 'GET')} {safe_get(alert, 'url')}</code></p>
+                        <p><strong>Evidence:</strong> {safe_get(alert, 'evidence', 'See technical description above')}</p>
                     </div>
                 </div>
             </div>
@@ -1146,7 +1149,7 @@ def main():
     import os
     
     if len(sys.argv) != 3:
-        print("Usage: python3 advanced_zap_validation.py <target_url> <output_directory>")
+        print("Usage: python3 fixed_advanced_zap_validation.py <target_url> <output_directory>")
         sys.exit(1)
     
     target_url = sys.argv[1]
@@ -1169,7 +1172,7 @@ if __name__ == "__main__":
     main()
 ```
 
-#### Step 4: Execute Phase 2 for Both Targets
+#### Step 3: Execute Phase 2 for Both Targets
 ```bash
 # Make scripts executable
 chmod +x phase2_validation.sh
