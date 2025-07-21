@@ -239,7 +239,13 @@ cd juice-shop
 npm install
 
 # Start juice-shop website
-npm start
+npm start > /dev/null/ 2>&1 &
+
+# Start the browser
+firefox "http://localhost:3000/"
+
+# Kill by process name
+pkill -f juice-shop
 
 # Start Juice Shop
 juice-shop &
