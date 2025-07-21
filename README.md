@@ -229,6 +229,17 @@ npm --version
 
 # Install OWASP Juice Shop
 npm install -g juice-shop
+or
+sudo git clone https://github.com/juice-shop/juice-shop.git
+
+# Allocate in the repository
+cd juice-shop
+
+# Install juice-shop
+npm install
+
+# Start juice-shop website
+npm start
 
 # Start Juice Shop
 juice-shop &
