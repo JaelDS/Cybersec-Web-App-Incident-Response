@@ -845,14 +845,14 @@ pip3 install python-owasp-zap-v2.4
 # Test DVWA SQL
 echo "🔬 Starting DVWA validation..."
 python3 advanced_zap_validation.py http://localhost/DVWA/vulnerabilities/xss_s/ ./temp_dvwa_zap/
-cp ./temp_dvwa_zap/validation_report.html scan-results/owasp-zap/dvwa/sql/zap_dvwa_active_scan.html
-cp ./temp_dvwa_zap/zap_validation_report.html scan-results/owasp-zap/dvwa/sql/zap_dvwa_passive_scan.html
+cp ./temp_dvwa_zap/validation_report.html scan-results/owasp-zap/dvwa/xss/zap_dvwa_active_scan.html
+cp ./temp_dvwa_zap/zap_validation_report.html scan-results/owasp-zap/dvwa/xss/zap_dvwa_passive_scan.html
 
 # Test DVWA XSS
 echo "🔬 Starting DVWA validation..."
 python3 advanced_zap_validation.py http://localhost/DVWA/vulnerabilities/sqli_blind/ ./temp_dvwa_zap/
-cp ./temp_dvwa_zap/validation_report.html scan-results/owasp-zap/dvwa/xss/zap_dvwa_active_scan.html
-cp ./temp_dvwa_zap/zap_validation_report.html scan-results/owasp-zap/dvwa/xss/zap_dvwa_passive_scan.html
+cp ./temp_dvwa_zap/validation_report.html scan-results/owasp-zap/dvwa/sql/zap_dvwa_active_scan.html
+cp ./temp_dvwa_zap/zap_validation_report.html scan-results/owasp-zap/dvwa/sql/zap_dvwa_passive_scan.html
 
 # Test Juice Shop
 echo "🔬 Starting Juice Shop validation..."
