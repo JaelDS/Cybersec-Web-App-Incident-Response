@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Assessment Report - localhost:3000</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .header h1 { margin: 0; font-size: 2.5em; }
+        .header p { margin: 10px 0 0 0; opacity: 0.9; }
+        .summary { background: #fff3cd; border-left: 5px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .alert-group { margin: 30px 0; }
+        .alert-group h2 { color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .vulnerability { background: #fff; border: 1px solid #ddd; margin: 15px 0; border-radius: 8px; overflow: hidden; }
+        .vuln-header { padding: 15px; background: #f8f9fa; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+        .vuln-title { font-size: 1.2em; font-weight: bold; margin: 0; }
+        .vuln-content { padding: 20px; }
+        .risk-high { border-left: 5px solid #dc3545; }
+        .risk-medium { border-left: 5px solid #fd7e14; }
+        .risk-low { border-left: 5px solid #ffc107; }
+        .risk-info { border-left: 5px solid #17a2b8; }
+        .risk-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.9em; font-weight: bold; }
+        .risk-high .risk-badge { background: #dc3545; color: white; }
+        .risk-medium .risk-badge { background: #fd7e14; color: white; }
+        .risk-low .risk-badge { background: #ffc107; color: #212529; }
+        .risk-info .risk-badge { background: #17a2b8; color: white; }
+        .business-impact { background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .attack-scenario { background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .technical-details { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .stat-number { font-size: 2em; font-weight: bold; }
+        .stat-label { opacity: 0.9; }
+        .evidence { background: #e2f3e4; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .evidence code { background: #fff; padding: 2px 5px; border-radius: 3px; color: #e83e8c; font-family: 'Courier New', monospace; }
+        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+        .file-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; margin: 15px 0; }
+        .file-item { background: #f8f9fa; padding: 8px 12px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
+        .scan-info { background: #e7f3ff; border: 1px solid #b8daff; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Security Assessment Report</h1>
+            <p>Nikto v2.5.0 Web Vulnerability Scan Results</p>
+        </div>
+
+        <div class="scan-info">
+            <h3>Scan Information</h3>
+            <strong>Target:</strong> localhost:3000<br>
+            <strong>Scanner:</strong> Nikto v2.5.0<br>
+            <strong>Date:</strong> Recent Scan<br>
+            <strong>Status:</strong> Complete
+        </div>
+
+        <div class="summary">
+            <h3>Executive Summary</h3>
+            <p>A comprehensive security assessment was performed on localhost:3000 using Nikto web vulnerability scanner. The scan identified multiple security concerns including missing security headers, potential exposure of sensitive backup files, and information disclosure vulnerabilities.</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">High Risk Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">63</div>
+                <div class="stat-label">Exposed Backup Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Information Disclosures</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">68</div>
+                <div class="stat-label">Total Findings</div>
+            </div>
+        </div>
+
+        <div class="alert-group">
+            <h2>High Risk Vulnerabilities</h2>
+            
+            <div class="vulnerability risk-high">
+                <div class="vuln-header">
+                    <h3 class="vuln-title">Permissive CORS Configuration</h3>
+                    <span class="risk-badge">HIGH</span>
+                </div>
+                <div class="vuln-content">
+                    <div class="business-impact">
+                        <strong>Business Impact:</strong> Allows any website to make cross-origin requests to your application, potentially exposing sensitive data to malicious sites.
+                    </div>
+                    <div class="attack-scenario">
+                        <strong>Attack Scenario:</strong> Malicious websites can perform authenticated requests on behalf of users, leading to data theft or unauthorized actions.
+                    </div>
+                    <div class="evidence">
+                        <strong>Evidence:</strong><br>
+                        <code>access-control-allow-origin: *</code>
+                    </div>
+                    <div class="technical-details">
+                        <strong>Technical Details:</strong> The application sets the Access-Control-Allow-Origin header to wildcard (*), allowing any origin to access the resource.
+                    </div>
+                </div>
+            </div>
+
+            <div class="vulnerability risk-high">
+                <div class="vuln-header">
+                    <h3 class="vuln-title">Missing X-Content-Type-Options Header</h3>
+                    <span class="risk-badge">HIGH</span>
+                </div>
+                <div class="vuln-content">
+                    <div class="business-impact">
+                        <strong>Business Impact:</strong> Browsers may interpret files as different MIME types, potentially leading to XSS attacks through content type confusion.
+                    </div>
+                    <div class="attack-scenario">
+                        <strong>Attack Scenario:</strong> Attackers can upload files that browsers interpret as executable content instead of their intended type.
+                    </div>
+                    <div class="technical-details">
+                        <strong>Recommendation:</strong> Add <code>X-Content-Type-Options: nosniff</code> header to prevent MIME type sniffing.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-group">
+            <h2>Medium Risk Vulnerabilities</h2>
+            
+            <div class="vulnerability risk-medium">
+                <div class="vuln-header">
+                    <h3 class="vuln-title">Potentially Exposed Backup Files</h3>
+                    <span class="risk-badge">MEDIUM</span>
+                </div>
+                <div class="vuln-content">
+                    <div class="business-impact">
+                        <strong>Business Impact:</strong> Backup files may contain sensitive information including source code, configuration files, or database credentials.
+                    </div>
+                    <div class="attack-scenario">
+                        <strong>Attack Scenario:</strong> Attackers can download backup files to analyze application structure, extract credentials, or find additional vulnerabilities.
+                    </div>
+                    <div class="evidence">
+                        <strong>Detected Files (63 total):</strong>
+                        <div class="file-list">
+                            <div class="file-item">backup.tgz</div>
+                            <div class="file-item">dump.jks</div>
+                            <div class="file-item">localhost.cer</div>
+                            <div class="file-item">database.jks</div>
+                            <div class="file-item">backup.pem</div>
+                            <div class="file-item">dump.pem</div>
+                            <div class="file-item">127.0.0.1.tar</div>
+                            <div class="file-item">database.tar.bz2</div>
+                            <div class="file-item">dump.tar</div>
+                            <div class="file-item">site.tar.lzma</div>
+                            <div class="file-item">site.alz</div>
+                            <div class="file-item">localhost.jks</div>
+                            <div class="file-item">...and 51 more files</div>
+                        </div>
+                    </div>
+                    <div class="technical-details">
+                        <strong>File Types Found:</strong> TGZ, JKS, CER, PEM, TAR, ALZ, WAR, EGG archives<br>
+                        <strong>Recommendation:</strong> Remove all backup files from web-accessible directories and implement proper backup procedures.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-group">
+            <h2>Low Risk & Informational</h2>
+            
+            <div class="vulnerability risk-info">
+                <div class="vuln-header">
+                    <h3 class="vuln-title">Information Disclosure - Recruiting Header</h3>
+                    <span class="risk-badge">INFO</span>
+                </div>
+                <div class="vuln-content">
+                    <div class="evidence">
+                        <strong>Evidence:</strong><br>
+                        <code>x-recruiting: /#/jobs</code>
+                    </div>
+                    <div class="technical-details">
+                        <strong>Details:</strong> Uncommon header found that may indicate recruiting information or job opportunities page.
+                    </div>
+                </div>
+            </div>
+
+            <div class="vulnerability risk-low">
+                <div class="vuln-header">
+                    <h3 class="vuln-title">Robots.txt Exposure</h3>
+                    <span class="risk-badge">LOW</span>
+                </div>
+                <div class="vuln-content">
+                    <div class="evidence">
+                        <strong>Evidence:</strong><br>
+                        <code>Entry '/ftp/' returns HTTP 200</code><br>
+                        <code>Contains 1 entry which should be manually reviewed</code>
+                    </div>
+                    <div class="technical-details">
+                        <strong>Details:</strong> robots.txt file contains entries that should be manually reviewed for sensitive information disclosure.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-group">
+            <h2>Recommendations</h2>
+            <div class="summary">
+                <ol>
+                    <li><strong>Immediate:</strong> Remove or restrict access to all backup files from web-accessible directories</li>
+                    <li><strong>Immediate:</strong> Configure proper CORS headers instead of using wildcard (*)</li>
+                    <li><strong>High Priority:</strong> Add security headers including X-Content-Type-Options: nosniff</li>
+                    <li><strong>Medium Priority:</strong> Review and sanitize robots.txt entries</li>
+                    <li><strong>Ongoing:</strong> Implement regular security scanning in CI/CD pipeline</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Security Assessment Report</strong> | Generated by Nikto v2.5.0 | 
+            For questions regarding this report, please contact the security team.</p>
+        </div>
+    </div>
+</body>
+</html>
