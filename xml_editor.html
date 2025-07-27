@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Security XML Report Viewer</title>
+    <style>
+        :root {
+            --primary-green: #00ff88;
+            --secondary-green: #00cc6a;
+            --dark-bg: #0a0f0a;
+            --terminal-bg: #111b11;
+            --border-green: #00ff8844;
+            --text-green: #00ff88;
+            --text-dim: #00cc6a99;
+            --success-green: #00ff88;
+            --warning-orange: #ffaa00;
+            --info-blue: #44aaff;
+            --attack-red: #ff6b6b;
+            --glow: 0 0 20px var(--primary-green);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--dark-bg);
+            color: var(--text-green);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: var(--terminal-bg);
+            border-radius: 15px;
+            border: 2px solid var(--border-green);
+            box-shadow: var(--glow);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-green);
+        }
+
+        .upload-section {
+            background: var(--terminal-bg);
+            border: 2px dashed var(--border-green);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary-green);
+            box-shadow: var(--glow);
+        }
+
+        .upload-section.dragover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--primary-green);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .quick-load {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .quick-btn {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: var(--secondary-green);
+            transform: translateY(-2px);
+        }
+
+        .results {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: var(--terminal-bg);
+            border: 1px solid var(--border-green);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.2);
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-content {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        .category-section {
+            background: var(--terminal-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-green);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-green);
+            border-bottom: 2px solid var(--border-green);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .finding-item {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-green);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .finding-item:hover {
+            border-color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .finding-title {
+            font-weight: bold;
+            color: var(--text-green);
+            font-size: 1.1rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .finding-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .meta-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .type-success { background: var(--success-green); color: var(--dark-bg); }
+        .type-vulnerability { background: var(--attack-red); color: white; }
+        .type-information { background: var(--info-blue); color: white; }
+        .type-warning { background: var(--warning-orange); color: var(--dark-bg); }
+
+        .finding-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-value {
+            font-size: 0.9rem;
+            color: var(--text-green);
+            word-break: break-all;
+        }
+
+        .finding-description {
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid var(--primary-green);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-dim);
+        }
+
+        .spinner {
+            border: 3px solid var(--border-green);
+            border-top: 3px solid var(--primary-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .error {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid var(--attack-red);
+            color: var(--attack-red);
+        }
+
+        .success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .filter-controls {
+            background: var(--terminal-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-green);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        .filter-select, .filter-input {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-green);
+            border-radius: 5px;
+            padding: 8px 12px;
+            color: var(--text-green);
+            font-family: inherit;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 5px rgba(0, 255, 136, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .finding-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .finding-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🛡️ Enhanced Security Report Viewer</h1>
+        <p>Comprehensive analysis of penetration testing and security assessment results</p>
+    </div>
+
+    <!-- File Upload Section -->
+    <div class="upload-section" id="uploadSection">
+        <input type="file" id="fileInput" accept=".xml" multiple>
+        <div class="upload-text">📁 Click to Upload XML Security Reports</div>
+        <div class="upload-subtext">Supports Burp Suite, OWASP ZAP, Nessus and custom XML formats</div>
+    </div>
+
+    <!-- Quick Load Section -->
+    <div class="quick-load">
+        <div style="margin-bottom: 10px; color: var(--text-dim);">Quick Load Sample Files:</div>
+        <button class="quick-btn" onclick="loadFile('scan-results/burp-suite/juice_shop_sucess.xml')">Burp Success</button>
+        <button class="quick-btn" onclick="loadFile('scan-results/burp-suite/results_juice_shop.xml')">Burp Results</button>
+        <button class="quick-btn" onclick="loadFile('scan-results/owasp-zap/zap_validation_report.xml')">ZAP Report</button>
+        <button class="quick-btn" onclick="showXMLStructure()">Inspect XML</button>
+    </div>
+
+    <!-- Loading Section -->
+    <div id="loadingSection" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <div>Processing security reports...</div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" class="results">
+        <!-- Summary Cards -->
+        <div class="summary-grid" id="summaryGrid">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-controls">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Scanner:</label>
+                    <select class="filter-select" id="scannerFilter" onchange="applyFilters()">
+                        <option value="all">All Scanners</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Search:</label>
+                    <input type="text" class="filter-input" id="searchFilter" placeholder="Search findings..." oninput="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Host:</label>
+                    <select class="filter-select" id="hostFilter" onchange="applyFilters()">
+                        <option value="all">All Hosts</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button class="quick-btn" onclick="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Findings Sections -->
+        <div id="findingsContainer">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let allFindings = [];
+    let filteredFindings = [];
+    let scanStats = {
+        totalFindings: 0,
+        scanners: new Set(),
+        hosts: new Set(),
+        files: new Set()
+    };
+
+    // Enhanced categorization logic
+    function categorizeContent(title, description, severity, confidence, scanner) {
+        const titleLower = title.toLowerCase();
+        const descLower = description.toLowerCase();
+        const fullText = (title + ' ' + description).toLowerCase();
+
+        // Keywords and patterns that indicate successful attacks or exploits
+        const successIndicators = [
+            // Direct success indicators
+            'successful', 'exploit', 'bypassed', 'accessed', 'executed', 'injected',
+            'retrieved', 'extracted', 'compromised', 'escalated', 'authenticated',
+            'shell', 'payload', 'backdoor', 'reverse shell', 'command execution',
+
+            // XSS success patterns
+            'alert(', 'javascript:', '<script', 'onerror=', 'onload=', 'onclick=',
+            'confirm(', 'prompt(', 'fromcharcode', 'string.fromcharcode',
+
+            // SQL injection success patterns
+            'union select', 'order by', 'information_schema', 'database()',
+            'version()', 'user()', 'concat(', 'group_concat', '1=1', '1=2',
+            'sleep(', 'benchmark(', 'waitfor delay',
+
+            // LDAP injection success patterns
+            'objectclass=*', 'cn=*', 'uid=*', '*(|', '*)(',
+
+            // OS command injection success patterns
+            'whoami', 'id;', 'cat /etc', 'ls -la', 'pwd', 'uname',
+            'ping -c', 'netstat', 'ps aux', 'echo ',
+
+            // File inclusion success patterns
+            '../', '..\\', '/etc/passwd', '/proc/version', 'boot.ini',
+            'web.config', '.htaccess',
+
+            // Directory traversal success patterns
+            'path traversal', 'directory traversal', 'file path manipulation',
+
+            // Authentication bypass patterns
+            'admin\'--', 'admin\' or \'1\'=\'1', 'authentication bypass',
+            'login bypass', 'session fixation',
+
+            // Deserialization attacks
+            'object injection', 'serialized object', 'deserialization',
+
+            // XXE attacks
+            '<!entity', 'external entity', 'xml external entity',
+
+            // SSRF attacks
+            'server-side request', 'internal network', 'localhost:',
+            '127.0.0.1:', '10.', '192.168.', '172.',
+
+            // CSRF attacks
+            'cross-site request', 'csrf token', 'state changing',
+
+            // Buffer overflow patterns
+            'buffer overflow', 'stack overflow', 'heap overflow',
+
+            // Code execution patterns
+            'eval(', 'exec(', 'system(', 'passthru(', 'shell_exec('
+        ];
+
+        // File names or patterns that indicate successful penetration testing
+        const successFilePatterns = [
+            'success', 'exploit', 'pwned', 'compromised', 'breached'
+        ];
+
+        // Check file name for success indicators
+        const fileNameCheck = scanner && successFilePatterns.some(pattern =>
+            scanner.toLowerCase().includes(pattern)
+        );
+
+        // Check for successful attacks first
+        if (successIndicators.some(keyword => fullText.includes(keyword)) || fileNameCheck) {
+            return 'success';
+        }
+
+        // Keywords that indicate vulnerabilities (but not necessarily exploited)
+        const vulnIndicators = [
+            'sql injection', 'xss', 'cross-site scripting', 'csrf', 'cross-site request forgery',
+            'lfi', 'local file inclusion', 'rfi', 'remote file inclusion',
+            'xxe', 'xml external entity', 'ssrf', 'server-side request forgery',
+            'buffer overflow', 'path traversal', 'privilege escalation',
+            'authentication bypass', 'authorization', 'insecure', 'vulnerability',
+            'security flaw', 'security issue', 'weakness', 'exploit',
+            'injection', 'overflow', 'bypass', 'disclosure'
+        ];
+
+        // Keywords that indicate warnings/issues
+        const warningIndicators = [
+            'misconfiguration', 'weak', 'outdated', 'deprecated', 'insecure',
+            'exposed', 'disclosure', 'default', 'unencrypted', 'cleartext',
+            'missing security header', 'information disclosure', 'fingerprint'
+        ];
+
+        // Check for vulnerabilities (if not already marked as success)
+        if (vulnIndicators.some(keyword => fullText.includes(keyword))) {
+            return 'vulnerability';
+        }
+
+        // Check for warnings
+        if (warningIndicators.some(keyword => fullText.includes(keyword))) {
+            return 'warning';
+        }
+
+        // Default to information
+        return 'information';
+    }
+
+    // Enhanced severity mapping
+    function mapSeverity(severity, confidence, type) {
+        if (!severity) return 'Unknown';
+
+        const severityLower = severity.toLowerCase();
+        const severityMap = {
+            'critical': 'Critical',
+            'high': 'High',
+            'medium': 'Medium',
+            'low': 'Low',
+            'information': 'Info',
+            'informational': 'Info',
+            'info': 'Info'
+        };
+
+        return severityMap[severityLower] || severity;
+    }
+
+    // File upload handling
+    document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+    document.getElementById('uploadSection').addEventListener('click', () => {
+        document.getElementById('fileInput').click();
+    });
+
+    // Drag and drop
+    const uploadSection = document.getElementById('uploadSection');
+    uploadSection.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadSection.classList.add('dragover');
+    });
+
+    uploadSection.addEventListener('dragleave', () => {
+        uploadSection.classList.remove('dragover');
+    });
+
+    uploadSection.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadSection.classList.remove('dragover');
+        const files = Array.from(e.dataTransfer.files);
+        processFiles(files);
+    });
+
+    function handleFileUpload(event) {
+        const files = Array.from(event.target.files);
+        if (files.length > 0) {
+            processFiles(files);
+        }
+    }
+
+    async function loadFile(filePath) {
+        showLoading();
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const xmlText = await response.text();
+            await parseXMLContent(xmlText, filePath);
+            generateResults();
+            hideLoading();
+        } catch (error) {
+            hideLoading();
+            showMessage(`❌ Error loading ${filePath}: ${error.message}`, 'error');
+        }
+    }
+
+    async function processFiles(files) {
+        showLoading();
+
+        // Reset data
+        allFindings = [];
+        scanStats = {
+            totalFindings: 0,
+            scanners: new Set(),
+            hosts: new Set(),
+            files: new Set()
+        };
+
+        try {
+            for (const file of files) {
+                if (file.type === 'text/xml' || file.name.endsWith('.xml')) {
+                    const text = await file.text();
+                    await parseXMLContent(text, file.name);
+                }
+            }
+            generateResults();
+            hideLoading();
+            showMessage(`✅ Successfully processed ${files.length} files`, 'success');
+        } catch (error) {
+            hideLoading();
+            showMessage(`❌ Error processing files: ${error.message}`, 'error');
+        }
+    }
+
+    async function parseXMLContent(xmlText, fileName) {
+        try {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+
+            const parseError = xmlDoc.querySelector('parsererror');
+            if (parseError) {
+                throw new Error('XML parsing failed');
+            }
+
+            console.log(`Parsing ${fileName}, content length: ${xmlText.length}`);
+
+            // Get document structure info
+            const rootElement = xmlDoc.documentElement;
+            const allElements = xmlDoc.querySelectorAll('*');
+            console.log(`Root element: ${rootElement.tagName}, Total elements: ${allElements.length}`);
+
+            // Enhanced detection logic - try multiple patterns
+            const hasIssues = xmlDoc.querySelector('issues') || xmlDoc.querySelector('issue');
+            const hasBurpElements = xmlDoc.querySelector('serialNumber') || xmlDoc.querySelector('type') ||
+                xmlDoc.querySelector('name') || xmlDoc.querySelector('host') || xmlDoc.querySelector('path');
+
+            const hasZapElements = xmlDoc.querySelector('site') || xmlDoc.querySelector('alertitem') ||
+                xmlDoc.querySelector('alerts') || xmlDoc.querySelector('instances');
+
+            const hasNessusElements = xmlDoc.querySelector('Report') || xmlDoc.querySelector('ReportItem') ||
+                xmlDoc.querySelector('ReportHost');
+
+            console.log(`Detection: issues=${!!hasIssues}, burp=${!!hasBurpElements}, zap=${!!hasZapElements}, nessus=${!!hasNessusElements}`);
+
+            if (hasIssues || hasBurpElements) {
+                console.log('Detected Burp Suite format');
+                parseBurpSuite(xmlDoc, fileName);
+            } else if (hasZapElements) {
+                console.log('Detected OWASP ZAP format');
+                parseOWASPZap(xmlDoc, fileName);
+            } else if (hasNessusElements) {
+                console.log('Detected Nessus format');
+                parseNessus(xmlDoc, fileName);
+            } else {
+                console.log('Using enhanced generic parsing');
+                parseGeneric(xmlDoc, fileName);
+            }
+
+            scanStats.files.add(fileName);
+
+        } catch (error) {
+            throw new Error(`Failed to parse ${fileName}: ${error.message}`);
+        }
+    }
+
+    function parseBurpSuite(xmlDoc, fileName) {
+        // Try multiple Burp Suite patterns
+        let issues = xmlDoc.querySelectorAll('issue');
+
+        // If no 'issue' elements, try other Burp patterns
+        if (issues.length === 0) {
+            issues = xmlDoc.querySelectorAll('item');
+        }
+
+        if (issues.length === 0) {
+            // Try to find any elements with Burp-like attributes or content
+            const allElements = xmlDoc.querySelectorAll('*');
+            issues = Array.from(allElements).filter(el => {
+                const hasName = el.querySelector('name') || el.querySelector('title') || el.hasAttribute('name');
+                const hasSeverity = el.querySelector('severity') || el.querySelector('risk') || el.hasAttribute('severity');
+                const hasHost = el.querySelector('host') || el.querySelector('hostname') || el.hasAttribute('host');
+                const hasPath = el.querySelector('path') || el.querySelector('location') || el.querySelector('url');
+                const hasDescription = el.querySelector('issueBackground') || el.querySelector('description') || el.querySelector('detail');
+
+                return hasName || hasSeverity || hasHost || hasPath || hasDescription;
+            });
+        }
+
+        console.log(`Found ${issues.length} Burp Suite issues in ${fileName}`);
+
+        // Process all issues found
+        issues.forEach((issue, index) => {
+            try {
+                const name = getElementText(issue, 'name') ||
+                    getElementText(issue, 'title') ||
+                    issue.getAttribute('name') ||
+                    `Issue ${index + 1}`;
+
+                const severity = getElementText(issue, 'severity') ||
+                    getElementText(issue, 'risk') ||
+                    issue.getAttribute('severity') ||
+                    'Information';
+
+                const confidence = getElementText(issue, 'confidence') ||
+                    issue.getAttribute('confidence') ||
+                    'Unknown';
+
+                const host = getElementText(issue, 'host') ||
+                    getElementText(issue, 'hostname') ||
+                    issue.getAttribute('host') ||
+                    'Unknown';
+
+                const path = getElementText(issue, 'path') ||
+                    getElementText(issue, 'location') ||
+                    getElementText(issue, 'url') ||
+                    issue.getAttribute('path') ||
+                    '/';
+
+                const description = getElementText(issue, 'issueBackground') ||
+                    getElementText(issue, 'issueDetail') ||
+                    getElementText(issue, 'description') ||
+                    getElementText(issue, 'detail') ||
+                    issue.textContent.substring(0, 500) ||
+                    'No description available';
+
+                const remediationDetail = getElementText(issue, 'remediationDetail') ||
+                    getElementText(issue, 'remediation') || '';
+                const vulnerabilityClassifications = getElementText(issue, 'vulnerabilityClassifications') || '';
+
+                // Enhanced categorization using file name context
+                const type = categorizeContent(name, description, severity, confidence, fileName);
+
+                console.log(`Issue ${index + 1}: "${name}" categorized as: ${type}`);
+
+                const finding = {
+                    id: allFindings.length + 1,
+                    title: name,
+                    type: type,
+                    severity: mapSeverity(severity, confidence, type),
+                    confidence: confidence,
+                    host: host,
+                    path: path,
+                    description: description,
+                    remediation: remediationDetail,
+                    classifications: vulnerabilityClassifications,
+                    scanner: 'Burp Suite',
+                    file: fileName,
+                    raw: {
+                        severity: severity,
+                        confidence: confidence,
+                        elementIndex: index
+                    }
+                };
+
+                allFindings.push(finding);
+                updateStats(finding);
+
+            } catch (error) {
+                console.error(`Error parsing Burp issue ${index}: ${error.message}`);
+            }
+        });
+
+        console.log(`Burp Suite parsing completed: ${issues.length} issues processed`);
+    }
+
+    function parseOWASPZap(xmlDoc, fileName) {
+        const alerts = xmlDoc.querySelectorAll('alertitem');
+
+        alerts.forEach((alert, index) => {
+            try {
+                const name = getElementText(alert, 'name') || `Alert ${index + 1}`;
+                const riskcode = getElementText(alert, 'riskcode') || '0';
+                const confidence = getElementText(alert, 'confidence') || 'Unknown';
+                const uri = getElementText(alert, 'uri') || 'http://unknown';
+                const description = getElementText(alert, 'desc') || 'No description';
+                const solution = getElementText(alert, 'solution') || '';
+                const reference = getElementText(alert, 'reference') || '';
+
+                const severity = mapZapRiskCode(riskcode);
+                const type = categorizeContent(name, description, severity, confidence, 'OWASP ZAP');
+
+                const finding = {
+                    id: allFindings.length + 1,
+                    title: name,
+                    type: type,
+                    severity: severity,
+                    confidence: confidence,
+                    host: extractHost(uri),
+                    path: extractPath(uri),
+                    description: description,
+                    remediation: solution,
+                    reference: reference,
+                    scanner: 'OWASP ZAP',
+                    file: fileName,
+                    raw: {
+                        riskcode: riskcode,
+                        uri: uri
+                    }
+                };
+
+                allFindings.push(finding);
+                updateStats(finding);
+
+            } catch (error) {
+                console.error(`Error parsing ZAP alert ${index}: ${error.message}`);
+            }
+        });
+    }
+
+    function parseNessus(xmlDoc, fileName) {
+        const items = xmlDoc.querySelectorAll('ReportItem');
+
+        items.forEach((item, index) => {
+            try {
+                const severity = item.getAttribute('severity') || '0';
+                const pluginName = item.getAttribute('pluginName') || `Plugin ${index + 1}`;
+                const description = getElementText(item, 'description') || 'No description';
+                const solution = getElementText(item, 'solution') || '';
+                const synopsis = getElementText(item, 'synopsis') || '';
+
+                const mappedSeverity = mapNessusSeverity(severity);
+                const type = categorizeContent(pluginName, description, mappedSeverity, 'High', 'Nessus');
+
+                const finding = {
+                    id: allFindings.length + 1,
+                    title: pluginName,
+                    type: type,
+                    severity: mappedSeverity,
+                    confidence: 'High',
+                    host: 'Multiple',
+                    path: 'N/A',
+                    description: synopsis || description,
+                    remediation: solution,
+                    scanner: 'Nessus',
+                    file: fileName,
+                    raw: {
+                        severity: severity
+                    }
+                };
+
+                allFindings.push(finding);
+                updateStats(finding);
+
+            } catch (error) {
+                console.error(`Error parsing Nessus item ${index}: ${error.message}`);
+            }
+        });
+    }
+
+    function parseGeneric(xmlDoc, fileName) {
+        // More aggressive generic parsing that creates findings from various elements
+        const allElements = xmlDoc.querySelectorAll('*');
+        const processedElements = new Set();
+        let foundElements = 0;
+
+        console.log(`Generic parsing: analyzing ${allElements.length} elements`);
+
+        // Strategy 1: Look for elements that have meaningful content and structure
+        Array.from(allElements).forEach((element, index) => {
+            if (processedElements.has(element)) return;
+
+            const tagName = element.tagName.toLowerCase();
+            const text = element.textContent.trim();
+            const hasChildren = element.children.length > 0;
+
+            // Skip very short content or elements that are just containers
+            if (text.length < 20) return;
+
+            // Skip if this element's content is mostly contained in its children
+            if (hasChildren) {
+                const childrenText = Array.from(element.children)
+                    .map(child => child.textContent.trim())
+                    .join(' ');
+                if (childrenText.length > text.length * 0.8) return;
+            }
+
+            // Look for elements that might represent individual findings/items
+            const isLikelyFinding =
+                tagName.includes('item') ||
+                tagName.includes('entry') ||
+                tagName.includes('record') ||
+                tagName.includes('finding') ||
+                tagName.includes('issue') ||
+                tagName.includes('alert') ||
+                tagName.includes('vulnerability') ||
+                tagName.includes('result') ||
+                // Or elements with meaningful content
+                text.length > 100 ||
+                // Or elements that contain key-value like information
+                (element.children.length > 0 && element.children.length < 20);
+
+            if (isLikelyFinding) {
+                // Try to extract structured information
+                const name = getElementText(element, 'name') ||
+                    getElementText(element, 'title') ||
+                    getElementText(element, 'summary') ||
+                    element.getAttribute('name') ||
+                    element.getAttribute('title') ||
+                    `${tagName.charAt(0).toUpperCase() + tagName.slice(1)} ${foundElements + 1}`;
+
+                const description = getElementText(element, 'description') ||
+                    getElementText(element, 'detail') ||
+                    getElementText(element, 'content') ||
+                    text.substring(0, 300);
+
+                const severity = getElementText(element, 'severity') ||
+                    getElementText(element, 'level') ||
+                    getElementText(element, 'priority') ||
+                    element.getAttribute('severity') ||
+                    'Info';
+
+                const host = getElementText(element, 'host') ||
+                    getElementText(element, 'target') ||
+                    getElementText(element, 'url') ||
+                    element.getAttribute('host') ||
+                    'Unknown';
+
+                const type = categorizeContent(name, description, severity, 'Medium', 'Generic');
+
+                const finding = {
+                    id: allFindings.length + 1,
+                    title: name,
+                    type: type,
+                    severity: mapSeverity(severity.toLowerCase()),
+                    confidence: 'Medium',
+                    host: host,
+                    path: 'N/A',
+                    description: description,
+                    scanner: 'Generic Parser',
+                    file: fileName,
+                    element: tagName,
+                    elementIndex: foundElements
+                };
+
+                allFindings.push(finding);
+                updateStats(finding);
+                processedElements.add(element);
+                foundElements++;
+            }
+        });
+
+        // Strategy 2: If we didn't find enough structured elements, look for any element with substantial content
+        if (foundElements < 5) {
+            console.log(`Only found ${foundElements} structured elements, looking for more content`);
+
+            Array.from(allElements).forEach((element, index) => {
+                if (processedElements.has(element)) return;
+                if (foundElements >= 50) return; // Limit to prevent overwhelming output
+
+                const text = element.textContent.trim();
+                const tagName = element.tagName;
+
+                // Look for elements with meaningful content
+                if (text.length > 50 && text.length < 2000 && element.children.length < 10) {
+                    const type = categorizeContent(tagName, text, 'Info', 'Low', 'Generic');
+
+                    const finding = {
+                        id: allFindings.length + 1,
+                        title: `${tagName} Content ${foundElements + 1}`,
+                        type: type,
+                        severity: 'Info',
+                        confidence: 'Low',
+                        host: 'Unknown',
+                        path: 'N/A',
+                        description: text.substring(0, 400) + (text.length > 400 ? '...' : ''),
+                        scanner: 'Content Parser',
+                        file: fileName,
+                        element: tagName
+                    };
+
+                    allFindings.push(finding);
+                    updateStats(finding);
+                    processedElements.add(element);
+                    foundElements++;
+                }
+            });
+        }
+
+        // Strategy 3: If still very few findings, create summary entries for major element types
+        if (foundElements < 3) {
+            const elementCounts = {};
+            Array.from(allElements).forEach(el => {
+                const tagName = el.tagName;
+                if (!elementCounts[tagName]) {
+                    elementCounts[tagName] = { count: 0, totalContent: 0 };
+                }
+                elementCounts[tagName].count++;
+                elementCounts[tagName].totalContent += el.textContent.trim().length;
+            });
+
+            // Create findings for the most significant element types
+            Object.entries(elementCounts)
+                .filter(([tag, data]) => data.count > 1 && data.totalContent > 100)
+                .sort(([,a], [,b]) => b.totalContent - a.totalContent)
+                .slice(0, 10)
+                .forEach(([tagName, data]) => {
+                    const sampleElement = xmlDoc.querySelector(tagName);
+                    const sampleContent = sampleElement ? sampleElement.textContent.trim().substring(0, 300) : '';
+
+                    const finding = {
+                        id: allFindings.length + 1,
+                        title: `${tagName} Elements Analysis`,
+                        type: 'information',
+                        severity: 'Info',
+                        confidence: 'Medium',
+                        host: 'Document',
+                        path: 'N/A',
+                        description: `Found ${data.count} ${tagName} elements with ${data.totalContent} total characters of content. Sample: ${sampleContent}${sampleContent.length >= 300 ? '...' : ''}`,
+                        scanner: 'Element Analyzer',
+                        file: fileName,
+                        element: tagName
+                    };
+
+                    allFindings.push(finding);
+                    updateStats(finding);
+                    foundElements++;
+                });
+        }
+
+        console.log(`Generic parsing completed: found ${foundElements} findings`);
+    }
+
+    function updateStats(finding) {
+        scanStats.totalFindings++;
+        scanStats.scanners.add(finding.scanner);
+        scanStats.hosts.add(finding.host);
+    }
+
+    function getElementText(parent, tagName) {
+        const element = parent.querySelector(tagName);
+        return element ? element.textContent.trim() : null;
+    }
+
+    function extractHost(url) {
+        try {
+            return new URL(url).hostname;
+        } catch {
+            return 'Unknown';
+        }
+    }
+
+    function extractPath(url) {
+        try {
+            return new URL(url).pathname;
+        } catch {
+            return '/';
+        }
+    }
+
+    function mapZapRiskCode(code) {
+        const map = {
+            '3': 'High',
+            '2': 'Medium',
+            '1': 'Low',
+            '0': 'Info'
+        };
+        return map[code] || 'Info';
+    }
+
+    function mapNessusSeverity(severity) {
+        const map = {
+            '4': 'Critical',
+            '3': 'High',
+            '2': 'Medium',
+            '1': 'Low',
+            '0': 'Info'
+        };
+        return map[severity] || 'Info';
+    }
+
+    function generateResults() {
+        filteredFindings = [...allFindings];
+
+        // Generate summary cards
+        generateSummaryCards();
+
+        // Populate scanner filter
+        populateFilters();
+
+        // Generate findings display
+        generateFindingsDisplay();
+
+        // Show results
+        document.getElementById('resultsSection').style.display = 'block';
+    }
+
+    function generateSummaryCards() {
+        const summaryGrid = document.getElementById('summaryGrid');
+        summaryGrid.innerHTML = `
+            <div class="summary-card">
+                <div class="summary-title">
+                    📊 Total Findings
+                </div>
+                <div class="summary-content">
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--primary-green); margin-bottom: 10px;">
+                        ${scanStats.totalFindings}
+                    </div>
+                    <div>All entries found and displayed</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-title">
+                    📁 Files Processed
+                </div>
+                <div class="summary-content">
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--success-green); margin-bottom: 10px;">
+                        ${scanStats.files.size}
+                    </div>
+                    <div>XML files analyzed</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-title">
+                    🔧 Scanners Used
+                </div>
+                <div class="summary-content">
+                    <div style="font-size: 1.2rem; margin-bottom: 10px;">
+                        ${Array.from(scanStats.scanners).join('<br>')}
+                    </div>
+                    <div>${scanStats.hosts.size} unique hosts found</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-title">
+                    ✅ Display Status
+                </div>
+                <div class="summary-content">
+                    <div style="font-size: 1.2rem; margin-bottom: 10px;">
+                        Showing ALL findings
+                    </div>
+                    <div>No limits or filtering applied</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function populateFilters() {
+        const scannerFilter = document.getElementById('scannerFilter');
+        scannerFilter.innerHTML = '<option value="all">All Scanners</option>';
+
+        Array.from(scanStats.scanners).forEach(scanner => {
+            const option = document.createElement('option');
+            option.value = scanner;
+            option.textContent = scanner;
+            scannerFilter.appendChild(option);
+        });
+    }
+
+    function generateFindingsDisplay() {
+        const container = document.getElementById('findingsContainer');
+
+        if (filteredFindings.length === 0) {
+            container.innerHTML = `
+                <div class="category-section">
+                    <div style="text-align: center; color: var(--text-dim); padding: 40px;">
+                        No findings match the current filters
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // Group findings by type
+        const groupedFindings = {
+            success: filteredFindings.filter(f => f.type === 'success'),
+            vulnerability: filteredFindings.filter(f => f.type === 'vulnerability'),
+            warning: filteredFindings.filter(f => f.type === 'warning'),
+            information: filteredFindings.filter(f => f.type === 'information')
+        };
+
+        let html = '';
+
+        // Generate sections for each type
+        Object.entries(groupedFindings).forEach(([type, findings]) => {
+            if (findings.length === 0) return;
+
+            const typeConfig = {
+                success: { icon: '🎯', title: 'Successful Attacks & Exploits', description: 'Confirmed security breaches and successful penetration attempts' },
+                vulnerability: { icon: '🚨', title: 'Security Vulnerabilities', description: 'Identified security weaknesses and potential attack vectors' },
+                warning: { icon: '⚠️', title: 'Security Warnings', description: 'Configuration issues and potential security concerns' },
+                information: { icon: 'ℹ️', title: 'Informational Findings', description: 'General security information and observations' }
+            };
+
+            const config = typeConfig[type];
+
+            html += `
+                <div class="category-section">
+                    <div class="section-title">
+                        ${config.icon} ${config.title} (${findings.length})
+                    </div>
+                    <div style="color: var(--text-dim); margin-bottom: 20px; font-size: 0.9rem;">
+                        ${config.description}
+                    </div>
+            `;
+
+            findings.forEach(finding => {
+                html += generateFindingHTML(finding);
+            });
+
+            html += '</div>';
+        });
+
+        container.innerHTML = html;
+    }
+
+    function generateFindingHTML(finding) {
+        return `
+            <div class="finding-item">
+                <div class="finding-header">
+                    <div class="finding-title">${finding.title}</div>
+                    <div class="finding-meta">
+                        <span class="meta-badge type-${finding.type}">${finding.type.toUpperCase()}</span>
+                        <span class="meta-badge" style="background: var(--border-green); color: var(--dark-bg);">
+                            ${finding.severity}
+                        </span>
+                        <span class="meta-badge" style="background: var(--text-dim); color: var(--dark-bg);">
+                            ${finding.scanner}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="finding-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Host</div>
+                        <div class="detail-value">${finding.host}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Path</div>
+                        <div class="detail-value">${finding.path}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Confidence</div>
+                        <div class="detail-value">${finding.confidence || 'Unknown'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Source File</div>
+                        <div class="detail-value">${finding.file}</div>
+                    </div>
+                </div>
+
+                <div class="finding-description">
+                    <strong>Description:</strong><br>
+                    ${finding.description}
+                    ${finding.remediation ? `<br><br><strong>Remediation:</strong><br>${finding.remediation}` : ''}
+                    ${finding.reference ? `<br><br><strong>Reference:</strong><br>${finding.reference}` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    function applyFilters() {
+        const typeFilter = document.getElementById('typeFilter').value;
+        const scannerFilter = document.getElementById('scannerFilter').value;
+        const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+
+        filteredFindings = allFindings.filter(finding => {
+            const matchesType = typeFilter === 'all' || finding.type === typeFilter;
+            const matchesScanner = scannerFilter === 'all' || finding.scanner === scannerFilter;
+            const matchesSearch = searchTerm === '' ||
+                finding.title.toLowerCase().includes(searchTerm) ||
+                finding.description.toLowerCase().includes(searchTerm) ||
+                finding.host.toLowerCase().includes(searchTerm);
+
+            return matchesType && matchesScanner && matchesSearch;
+        });
+
+        generateFindingsDisplay();
+    }
+
+    function clearFilters() {
+        document.getElementById('scannerFilter').value = 'all';
+        document.getElementById('hostFilter').value = 'all';
+        document.getElementById('searchFilter').value = '';
+        applyFilters();
+    }
+
+    function showLoading() {
+        document.getElementById('loadingSection').style.display = 'block';
+        document.getElementById('resultsSection').style.display = 'none';
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingSection').style.display = 'none';
+    }
+
+    function showMessage(message, type = 'info') {
+        const container = document.querySelector('.container');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${type}`;
+        msgDiv.innerHTML = message;
+        container.appendChild(msgDiv);
+        setTimeout(() => msgDiv.remove(), 5000);
+    }
+
+    function showXMLStructure() {
+        if (!allFindings.length) {
+            showMessage('⚠️ Please load an XML file first', 'error');
+            return;
+        }
+
+        // Create debugging information
+        let debugInfo = `
+            <div class="category-section">
+                <div class="section-title">
+                    🔍 Parsing Debug Information
+                </div>
+                <div class="finding-item">
+                    <div class="finding-header">
+                        <div class="finding-title">Processing Results</div>
+                    </div>
+                    <div class="finding-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Total Findings Parsed</div>
+                            <div class="detail-value">${allFindings.length}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Currently Displayed</div>
+                            <div class="detail-value">${filteredFindings.length}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Files Processed</div>
+                            <div class="detail-value">${scanStats.files.size}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Scanners Detected</div>
+                            <div class="detail-value">${Array.from(scanStats.scanners).join(', ')}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Unique Hosts</div>
+                            <div class="detail-value">${scanStats.hosts.size}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Host List</div>
+                            <div class="detail-value">${Array.from(scanStats.hosts).join(', ')}</div>
+                        </div>
+                    </div>
+                    <div class="finding-description">
+                        <strong>Processing Mode:</strong> ULTRA AGGRESSIVE - parsing ALL possible elements<br>
+                        <strong>Display Mode:</strong> COMPLETE - showing ALL findings without categorization limits<br>
+                        <strong>Console Logs:</strong> Check browser console (F12 → Console) for detailed parsing information
+                    </div>
+                </div>
+        `;
+
+        // Show breakdown by scanner
+        const scannerBreakdown = {};
+        allFindings.forEach(finding => {
+            if (!scannerBreakdown[finding.scanner]) {
+                scannerBreakdown[finding.scanner] = 0;
+            }
+            scannerBreakdown[finding.scanner]++;
+        });
+
+        Object.entries(scannerBreakdown).forEach(([scanner, count]) => {
+            debugInfo += `
+                <div class="finding-item">
+                    <div class="finding-header">
+                        <div class="finding-title">${scanner} Results</div>
+                        <div class="meta-badge" style="background: var(--primary-green); color: var(--dark-bg);">
+                            ${count} findings
+                        </div>
+                    </div>
+                    <div class="finding-description">
+                        Scanner processed ${count} entries from the XML content.
+                    </div>
+                </div>
+            `;
+        });
+
+        debugInfo += '</div>';
+
+        // Create or update debug section
+        let debugSection = document.getElementById('debugSection');
+        if (!debugSection) {
+            debugSection = document.createElement('div');
+            debugSection.id = 'debugSection';
+            document.getElementById('findingsContainer').appendChild(debugSection);
+        }
+
+        debugSection.innerHTML = debugInfo;
+        debugSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Initialize
+    console.log('Enhanced Security XML Viewer initialized');
+</script>
+</body>
+</html>

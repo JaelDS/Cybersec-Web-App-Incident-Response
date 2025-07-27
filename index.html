@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OWASP Juice Shop Security Assessment - Professional Penetration Testing Results">
+    <meta name="author" content="Security Researcher">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+    <title>PENTEST-LAB :: OWASP Juice Shop Security Assessment</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:%2300cc6a;%7D.cls-2%7Bfill:%2300ff88;%7D.cls-3%7Bfill:%2300ff88;%7D%3C/style%3E%3C/defs%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpolygon class='cls-1' points='12.15 16.24 15.67 14.21 15.67 10.15 14.49 9.46 10.97 15.56 12.15 16.24'%3E%3C/polygon%3E%3Cpolygon class='cls-2' points='8.63 10.15 8.63 14.21 9.81 14.89 13.34 8.8 12.15 8.11 8.63 10.15'%3E%3C/polygon%3E%3C/g%3E%3C/g%3E%3C/g%3E%3Cpolygon class='cls-3' points='11.46 17.45 7.24 15.01 7.24 10.15 3.49 7.98 3.49 17.18 11.46 21.78 11.46 17.45'%3E%3C/polygon%3E%3Cpolygon class='cls-3' points='7.93 8.95 12.15 6.51 16.37 8.95 20.13 6.78 12.15 2.17 4.17 6.78 7.93 8.95'%3E%3C/polygon%3E%3Cpolygon class='cls-3' points='17.06 15.01 12.84 17.45 12.84 21.78 20.82 17.18 20.82 7.98 17.06 10.15 17.06 15.01'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #00ff88;
+            --secondary-green: #00cc6a;
+            --dark-bg: #0a0f0a;
+            --terminal-bg: #111b11;
+            --border-green: #00ff8844;
+            --text-green: #00ff88;
+            --text-dim: #00cc6a99;
+            --warning-orange: #ffaa00;
+            --danger-red: #ff4444;
+            --info-blue: #44aaff;
+            --glow: 0 0 20px var(--primary-green);
+            --pulse: 0 0 30px var(--primary-green);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--dark-bg);
+            color: var(--text-green);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Remove any browser default styling */
+        html, body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        /* Animated background matrix effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .matrix-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 98px,
+                    var(--primary-green) 100px
+            );
+            animation: matrix-scroll 20s linear infinite;
+        }
+
+        @keyframes matrix-scroll {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(100px); }
+        }
+
+        /* Terminal container */
+        .terminal {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--terminal-bg);
+            border: 2px solid var(--border-green);
+            border-radius: 8px;
+            box-shadow: var(--glow);
+            backdrop-filter: blur(10px);
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        /* Command line interface */
+        .cli-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-green);
+            background: linear-gradient(135deg, var(--terminal-bg), #0f1f0f);
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+        }
+
+        .cli-prompt {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .prompt-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .prompt-symbol {
+            color: var(--primary-green);
+            font-weight: 700;
+        }
+
+        .typing-animation {
+            font-size: 1.5rem;
+            font-weight: 500;
+            min-height: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--primary-green);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Main content grid */
+        .content-grid {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Assessment cards */
+        .assessment-card {
+            background: linear-gradient(135deg, var(--terminal-bg), #0d1a0d);
+            border: 1px solid var(--border-green);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .assessment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--primary-green)33, transparent);
+            transition: left 0.5s ease;
+        }
+
+        .assessment-card:hover::before {
+            left: 100%;
+        }
+
+        .assessment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--pulse);
+            border-color: var(--primary-green);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-green)22;
+            border-radius: 8px;
+            border: 1px solid var(--border-green);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        /* Stats display */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat-item {
+            padding: 0.8rem;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-green);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Severity indicators */
+        .severity-bar {
+            height: 4px;
+            background: var(--dark-bg);
+            border-radius: 2px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .severity-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        .severity-fill.critical { background: var(--danger-red); }
+        .severity-fill.high { background: var(--warning-orange); }
+        .severity-fill.medium { background: var(--info-blue); }
+        .severity-fill.low { background: var(--primary-green); }
+
+        /* Action buttons */
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.6rem;
+            background: transparent;
+            border: 1px solid var(--border-green);
+            color: var(--primary-green);
+            font-family: inherit;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-green)22;
+            box-shadow: 0 0 10px var(--primary-green)44;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-green)22;
+            border-color: var(--primary-green);
+        }
+
+        /* Footer terminal line */
+        .terminal-footer {
+            padding: 1rem 2rem;
+            border-top: 1px solid var(--border-green);
+            background: var(--dark-bg);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Status indicators */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .terminal {
+                margin: 1rem;
+                border-radius: 0;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .cli-header {
+                padding: 1rem;
+            }
+
+            .typing-animation {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Loading animation */
+        .loading-bar {
+            width: 100%;
+            height: 2px;
+            background: var(--dark-bg);
+            margin: 1rem 0;
+            overflow: hidden;
+            border-radius: 1px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-green), var(--secondary-green));
+            width: 0%;
+            animation: loading 3s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-green);
+        }
+
+        /* Developer credit footer styling */
+        .dev-credit {
+            padding: 1rem 2rem;
+            border-top: 1px solid var(--border-green);
+            background: var(--dark-bg);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .github-link {
+            color: var(--primary-green);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.3s ease;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .github-link:hover {
+            background: var(--primary-green)22;
+            box-shadow: 0 0 8px var(--primary-green)44;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+<div class="matrix-bg"></div>
+
+<div class="terminal">
+    <!-- CLI Header -->
+    <div class="cli-header">
+        <div class="cli-prompt">
+            <div class="prompt-line">
+                <span class="prompt-symbol">┌─[</span>
+                <span style="color: var(--warning-orange);">security-researcher@kali</span>
+                <span class="prompt-symbol">]─[</span>
+                <span style="color: var(--info-blue);">~/pentest-lab/juice-shop</span>
+                <span class="prompt-symbol">]</span>
+            </div>
+            <div class="prompt-line">
+                <span class="prompt-symbol">└──╼</span>
+                <span style="color: var(--text-dim);">$</span>
+            </div>
+        </div>
+        <div class="typing-animation" id="typewriter">
+            <span class="cursor"></span>
+        </div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Nikto Assessment Card -->
+        <div class="assessment-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color: #00ff88;">
+                        <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
+                        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="card-title">Nikto Web Scanner</div>
+                    <div class="card-subtitle">Vulnerability Discovery & Reconnaissance</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">68</span>
+                    <span class="stat-label">Total Findings</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" style="color: var(--danger-red);">3</span>
+                    <span class="stat-label">High Risk</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">Node.js</span>
+                    <span class="stat-label">Technology</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">892s</span>
+                    <span class="stat-label">Scan Time</span>
+                </div>
+            </div>
+
+            <div class="severity-bar">
+                <div class="severity-fill high" style="width: 75%;"></div>
+            </div>
+
+            <!-- Key Findings -->
+            <div style="margin: 16px 0; font-size: 0.8rem;">
+                <div style="margin-bottom: 8px; color: var(--danger-red);">🚨 CORS Wildcard Policy</div>
+                <div style="margin-bottom: 8px; color: var(--warning-orange);">⚠️ Missing Security Headers</div>
+                <div style="margin-bottom: 8px; color: var(--info-blue);">📁 Directory Indexing</div>
+                <div style="margin-bottom: 8px; color: var(--text-dim);">📊 Information Disclosure</div>
+            </div>
+
+            <div class="card-actions">
+                <a href="scan-results/nikto/localhost_3000_debug.txt" class="action-btn primary" target="_blank" title="Raw Log File">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                    TXT Log
+                </a>
+                <a href="scan-results/nikto/nikto_report.html" class="action-btn" target="_blank" title="HTML Report">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
+                    </svg>
+                    HTML Report
+                </a>
+            </div>
+        </div>
+
+        <!-- OWASP ZAP Assessment Card -->
+        <div class="assessment-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color: #00ff88;">
+                        <path d="M12,2L22,12L12,22L2,12L12,2M12,4.8L5.4,12L12,19.2L18.6,12L12,4.8M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="card-title">OWASP ZAP Scanner</div>
+                    <div class="card-subtitle">Dynamic Security Testing & Validation</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">530</span>
+                    <span class="stat-label">Total Findings</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" style="color: var(--danger-red);">200</span>
+                    <span class="stat-label">Critical</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">Express.js</span>
+                    <span class="stat-label">Framework</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1247s</span>
+                    <span class="stat-label">Total Scan</span>
+                </div>
+            </div>
+
+            <div class="severity-bar">
+                <div class="severity-fill critical" style="width: 85%;"></div>
+            </div>
+
+            <!-- Key Findings -->
+            <div style="margin: 16px 0; font-size: 0.8rem;">
+                <div style="margin-bottom: 8px; color: var(--danger-red);">🔥 Cross-Origin Attacks</div>
+                <div style="margin-bottom: 8px; color: var(--danger-red);">🎭 Clickjacking Vectors</div>
+                <div style="margin-bottom: 8px; color: var(--warning-orange);">📊 Information Harvesting</div>
+                <div style="margin-bottom: 8px; color: var(--text-dim);">🔍 Session Management</div>
+            </div>
+
+            <div class="card-actions">
+                <a href="scan-results/owasp-zap/zap_juiceshop_active_scan.html" class="action-btn primary" target="_blank" title="Active Scan Report">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9,12L11,14L15,10L13.59,8.59L11,11.17L9.41,9.59L8,11M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"/>
+                    </svg>
+                    Active Scan
+                </a>
+                <a href="scan-results/owasp-zap/zap_juiceshop_api_scan.html" class="action-btn" target="_blank" title="API Scan Report">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
+                    </svg>
+                    API Scan
+                </a>
+                <a href="scan-results/owasp-zap/zap_alerts.json" class="action-btn" target="_blank" title="JSON Data">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5,3H7V5H5V10A2,2 0 0,1 3,12A2,2 0 0,1 5,14V19H7V21H5C3.93,20.97 3.03,20.07 3,19V15A2,2 0 0,0 1,13H0V11H1A2,2 0 0,0 3,9V5A2,2 0 0,1 5,3M19,3A2,2 0 0,1 21,5V9A2,2 0 0,0 23,11H24V13H23A2,2 0 0,0 21,15V19A2,2 0 0,1 19,21H17V19H19V14A2,2 0 0,1 21,12A2,2 0 0,1 19,10V5H17V3H19Z"/>
+                    </svg>
+                    JSON
+                </a>
+                <a href="scan-results/owasp-zap/zap_validation_report.xml" class="action-btn" target="_blank" title="XML Report">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z"/>
+                    </svg>
+                    XML
+                </a>
+            </div>
+        </div>
+
+        <!-- Burp Suite Assessment Card -->
+        <div class="assessment-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color: #00ff88;">
+                        <path d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M21,9V7L15,1H5C3.89,1 3,1.89 3,3V21A2,2 0 0,0 5,23H19A2,2 0 0,0 21,21V11L15,5V9H21Z"/>
+                        <circle cx="12" cy="16" r="2" fill="none" stroke="currentColor" stroke-width="1"/>
+                        <path d="M8,12L16,12M8,14L16,14M8,18L16,18" stroke="currentColor" stroke-width="1" fill="none"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="card-title">Burp Suite Professional</div>
+                    <div class="card-subtitle">Manual Exploitation & Parameter Testing</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">10</span>
+                    <span class="stat-label">Attack Vectors</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" style="color: var(--danger-red);">8</span>
+                    <span class="stat-label">Successful</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">HTTP 200</span>
+                    <span class="stat-label">Response</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">80,586</span>
+                    <span class="stat-label">Bytes</span>
+                </div>
+            </div>
+
+            <div class="severity-bar">
+                <div class="severity-fill critical" style="width: 90%;"></div>
+            </div>
+
+            <!-- Key Findings -->
+            <div style="margin: 16px 0; font-size: 0.8rem;">
+                <div style="margin-bottom: 8px; color: var(--danger-red);">🔓 Path Traversal (3)</div>
+                <div style="margin-bottom: 8px; color: var(--danger-red);">💉 XSS Injection (2)</div>
+                <div style="margin-bottom: 8px; color: var(--warning-orange);">🔍 LDAP Injection (2)</div>
+                <div style="margin-bottom: 8px; color: var(--warning-orange);">⚡ Command Injection (1)</div>
+            </div>
+
+            <div class="card-actions">
+                <a href="scan-results/burp-suite/juice_shop_sucess.xml" class="action-btn primary" target="_blank" title="Success Results">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z"/>
+                    </svg>
+                    Success XML
+                </a>
+                <a href="scan-results/burp-suite/results_juice_shop.xml" class="action-btn" target="_blank" title="Results Analysis">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9,12L11,14L15,10L13.59,8.59L11,11.17L9.41,9.59L8,11M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"/>
+                    </svg>
+                    Results XML
+                </a>
+            </div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="assessment-card">
+            <div class="card-header">
+                <div class="card-icon">📈</div>
+                <div>
+                    <div class="card-title">Executive Summary</div>
+                    <div class="card-subtitle">Business Impact Assessment</div>
+                </div>
+            </div>
+
+            <div style="margin: 1rem 0; font-size: 0.9rem; line-height: 1.8;">
+                <div style="margin-bottom: 0.8rem;">
+                    <span style="color: var(--danger-red);">🚨 Critical Risk:</span>
+                    <span style="color: var(--text-dim);">$23.6M Total Exposure</span>
+                </div>
+                <div style="margin-bottom: 0.8rem;">
+                    <span style="color: var(--warning-orange);">⚠️ High Priority:</span>
+                    <span style="color: var(--text-dim);">SQL Injection & XSS</span>
+                </div>
+                <div style="margin-bottom: 0.8rem;">
+                    <span style="color: var(--info-blue);">💰 ROI:</span>
+                    <span style="color: var(--text-dim);">4,613% Security Investment</span>
+                </div>
+            </div>
+
+            <div class="card-actions">
+                <a href="reports/business_impact_analysis.html" class="action-btn primary" onclick="alert('Total business exposure: $23.6M across SQL injection, XSS, and authentication vulnerabilities')">
+                    💼 Business Impact
+                </a>
+                <a href="reports/remediation_guide.html" class="action-btn" onclick="alert('Immediate actions: 1) Fix SQL injection 2) Implement CSP 3) Enable MFA 4) Configure CORS')">
+                    🔧 Remediation
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terminal Footer -->
+    <div class="terminal-footer">
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>System Status: ACTIVE</span>
+        </div>
+        <div>
+            <span>Last Updated: </span>
+            <span id="last-updated"></span>
+        </div>
+        <div>
+            <span>Assessment Complete: All 3 Tools</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Terminal Animation Script
+    document.addEventListener('DOMContentLoaded', function() {
+        const commands = [
+            "nikto -h http://localhost:3000 -output nikto_report.txt",
+            "python3 advanced_zap_validation.py http://localhost:3000 ./scan-results/",
+            "burpsuite --intruder --target=localhost:3000 --wordlist=payloads.txt",
+            "Assessment Complete: 608 vulnerabilities identified across 3 tools"
+        ];
+
+        let currentCommand = 0;
+        let currentChar = 0;
+        const typewriter = document.getElementById('typewriter');
+        const cursor = typewriter.querySelector('.cursor');
+
+        function typeCommand() {
+            if (currentCommand < commands.length) {
+                const command = commands[currentCommand];
+
+                if (currentChar < command.length) {
+                    const textNode = document.createTextNode(command[currentChar]);
+                    typewriter.insertBefore(textNode, cursor);
+                    currentChar++;
+                    setTimeout(typeCommand, 50 + Math.random() * 50);
+                } else {
+                    // Wait, then clear and start next command
+                    setTimeout(() => {
+                        // Clear text but keep cursor
+                        while (typewriter.firstChild && typewriter.firstChild !== cursor) {
+                            typewriter.removeChild(typewriter.firstChild);
+                        }
+                        currentChar = 0;
+                        currentCommand++;
+
+                        if (currentCommand < commands.length) {
+                            setTimeout(typeCommand, 500);
+                        } else {
+                            // Start over
+                            currentCommand = 0;
+                            setTimeout(typeCommand, 2000);
+                        }
+                    }, 2000);
+                }
+            }
+        }
+
+        // Start typing animation
+        setTimeout(typeCommand, 1000);
+
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            const timestamp = now.toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            const lastUpdated = document.getElementById('last-updated');
+            if (lastUpdated) {
+                lastUpdated.textContent = timestamp;
+            }
+        }
+
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+
+        // Add click handlers for cards
+        document.querySelectorAll('.assessment-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't trigger if clicking on action buttons
+                if (!e.target.closest('.action-btn')) {
+                    const cardTitle = this.querySelector('.card-title').textContent;
+                    console.log(`Clicked on ${cardTitle} card`);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
